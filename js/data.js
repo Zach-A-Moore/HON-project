@@ -41,6 +41,10 @@ const FOOD_DATABASE = [
   { id: 'oatmeal',   name: 'Oatmeal (1 cup cooked)',      category: 'grains',    label: 'Grains',       wfp:  193, icon: '🥣' },
   { id: 'cereal',    name: 'Cereal (1 cup)',              category: 'grains',    label: 'Grains',       wfp:  155, icon: '🥣' },
   { id: 'tortilla',  name: 'Tortilla (1 medium, 45 g)',   category: 'grains',    label: 'Grains',       wfp:   72, icon: '🫓' },
+  { id: 'xls-bread-mixed', name: 'Bread/Bagels/Buns (xls serving)', category: 'grains', label: 'Grains', wfp: 110, icon: '🍞' },
+  { id: 'xls-pasta-rice-oatmeal', name: 'Pasta/Rice/Oatmeal (1 cup cooked)', category: 'grains', label: 'Grains', wfp: 245, icon: '🍝' },
+  { id: 'xls-cereal-dry', name: 'Cereal Dry (without milk)', category: 'grains', label: 'Grains', wfp: 155, icon: '🥣' },
+  { id: 'xls-potatoes-serving', name: 'Potatoes (small serving)', category: 'vegetables', label: 'Vegetables', wfp: 70, icon: '🥔' },
   // Legumes
   { id: 'black-beans',name:'Black Beans (1 cup cooked)',  category: 'legumes',   label: 'Legumes',      wfp:  424, icon: '🫘' },
   { id: 'lentils',   name: 'Lentils (1 cup cooked)',      category: 'legumes',   label: 'Legumes',      wfp:  302, icon: '🫘' },
@@ -64,6 +68,11 @@ const FOOD_DATABASE = [
   { id: 'cucumber',  name: 'Cucumber (1 medium)',         category: 'vegetables',label: 'Vegetables',   wfp:   28, icon: '🥒' },
   { id: 'onion',     name: 'Onion (1 medium)',            category: 'vegetables',label: 'Vegetables',   wfp:   33, icon: '🧅' },
   { id: 'sweet-potato',name:'Sweet Potato (1 medium)',    category: 'vegetables',label: 'Vegetables',   wfp:   59, icon: '🍠' },
+  { id: 'green-beans',name:'Green Beans (1 cup)',         category: 'vegetables',label: 'Vegetables',   wfp:   43, icon: '🥗' },
+  { id: 'peas',      name: 'Peas (1 cup)',                category: 'vegetables',label: 'Vegetables',   wfp:   49, icon: '🥗' },
+  { id: 'celery',    name: 'Celery (2 stalks)',           category: 'vegetables',label: 'Vegetables',   wfp:   17, icon: '🥗' },
+  { id: 'cauliflower',name:'Cauliflower (1 cup)',         category: 'vegetables',label: 'Vegetables',   wfp:   41, icon: '🥦' },
+  { id: 'zucchini',  name: 'Zucchini (1 cup)',            category: 'vegetables',label: 'Vegetables',   wfp:   30, icon: '🥒' },
   // Fruits
   { id: 'apple',     name: 'Apple (1 medium)',            category: 'fruits',    label: 'Fruits',       wfp:  125, icon: '🍎' },
   { id: 'banana',    name: 'Banana (1 medium)',           category: 'fruits',    label: 'Fruits',       wfp:  160, icon: '🍌' },
@@ -73,13 +82,47 @@ const FOOD_DATABASE = [
   { id: 'avocado',   name: 'Avocado (½ medium)',          category: 'fruits',    label: 'Fruits',       wfp:  151, icon: '🥑' },
   { id: 'mango',     name: 'Mango (1 medium)',            category: 'fruits',    label: 'Fruits',       wfp:  220, icon: '🥭' },
   { id: 'blueberries',name:'Blueberries (1 cup)',         category: 'fruits',    label: 'Fruits',       wfp:   45, icon: '🫐' },
+  { id: 'xls-fruit-serving', name: 'Fruit Serving (apple/orange/grapes/cherries)', category: 'fruits', label: 'Fruits', wfp: 105, icon: '🍎' },
+  // Snacks & Sweets
+  { id: 'candy-bar', name: 'Candy Bar (1 bar)',           category: 'snacks',    label: 'Snacks & Sweets', wfp:  130, icon: '🍬' },
+  { id: 'chocolate-bar',name:'Chocolate Bar (1 bar)',     category: 'snacks',    label: 'Snacks & Sweets', wfp:  170, icon: '🍫' },
+  { id: 'gummy-candy',name:'Gummy Candy (1 serving)',     category: 'snacks',    label: 'Snacks & Sweets', wfp:  105, icon: '🍬' },
+  { id: 'cookies',   name: 'Cookies (2 medium)',          category: 'snacks',    label: 'Snacks & Sweets', wfp:   65, icon: '🍪' },
+  { id: 'chips',     name: 'Chips (1 oz)',                category: 'snacks',    label: 'Snacks & Sweets', wfp:   90, icon: '🍟' },
+  { id: 'crackers',  name: 'Crackers (1 oz)',             category: 'snacks',    label: 'Snacks & Sweets', wfp:   42, icon: '🥨' },
+  { id: 'donut',     name: 'Donut (1 medium)',            category: 'snacks',    label: 'Snacks & Sweets', wfp:  185, icon: '🍩' },
+  { id: 'granola-bar',name:'Granola Bar (1 bar)',         category: 'snacks',    label: 'Snacks & Sweets', wfp:   88, icon: '🍫' },
+  { id: 'popcorn',   name: 'Popcorn (3 cups)',            category: 'snacks',    label: 'Snacks & Sweets', wfp:   53, icon: '🍿' },
+  { id: 'xls-candy-serving', name: 'Candy (regular bar serving)', category: 'snacks', label: 'Snacks & Sweets', wfp: 130, icon: '🍬' },
   // Beverages
   { id: 'coffee',    name: 'Coffee (1 cup brewed)',       category: 'beverages', label: 'Beverages',    wfp:  140, icon: '☕' },
   { id: 'tea',       name: 'Tea (1 cup brewed)',          category: 'beverages', label: 'Beverages',    wfp:   30, icon: '🍵' },
   { id: 'orange-juice',name:'Orange Juice (1 cup)',       category: 'beverages', label: 'Beverages',    wfp:  190, icon: '🍊' },
+  { id: 'apple-juice',name:'Apple Juice (1 cup)',         category: 'beverages', label: 'Beverages',    wfp:  170, icon: '🧃' },
+  { id: 'grape-juice',name:'Grape Juice (1 cup)',         category: 'beverages', label: 'Beverages',    wfp:  185, icon: '🧃' },
+  { id: 'cranberry-juice',name:'Cranberry Juice (1 cup)', category: 'beverages', label: 'Beverages',    wfp:  175, icon: '🧃' },
+  { id: 'fruit-punch',name:'Fruit Punch (12 oz)',         category: 'beverages', label: 'Beverages',    wfp:  160, icon: '🥤' },
+  { id: 'lemonade',  name: 'Lemonade (12 oz)',            category: 'beverages', label: 'Beverages',    wfp:  120, icon: '🍋' },
+  { id: 'kool-aid',  name: 'Kool-Aid (12 oz)',            category: 'beverages', label: 'Beverages',    wfp:  110, icon: '🥤' },
+  { id: 'sports-drink',name:'Sports Drink (20 oz)',       category: 'beverages', label: 'Beverages',    wfp:  150, icon: '🥤' },
+  { id: 'energy-drink',name:'Energy Drink (16 oz)',       category: 'beverages', label: 'Beverages',    wfp:  155, icon: '🥤' },
   { id: 'beer',      name: 'Beer (12 oz can)',            category: 'beverages', label: 'Beverages',    wfp:  185, icon: '🍺' },
   { id: 'wine',      name: 'Wine (5 oz glass)',           category: 'beverages', label: 'Beverages',    wfp:  470, icon: '🍷' },
   { id: 'soda',      name: 'Soda (12 oz can)',            category: 'beverages', label: 'Beverages',    wfp:  200, icon: '🥤' },
+  { id: 'pop',       name: 'Pop (12 oz can)',             category: 'beverages', label: 'Beverages',    wfp:  200, icon: '🥤' },
+  { id: 'liquor-shot', name: 'Liquor (1 shot)',           category: 'beverages', label: 'Beverages',    wfp:   65, icon: '🥃' },
+  { id: 'xls-pop-koolaid-beer', name: 'Pop/Kool-Aid/Beer (12 oz equivalent)', category: 'beverages', label: 'Beverages', wfp: 165, icon: '🥤' },
+  { id: 'xls-juice-wine-serving', name: 'Juice or Wine (1 glass)', category: 'beverages', label: 'Beverages', wfp: 330, icon: '🧃' },
+  // Spreadsheet-specific meat/fish rows
+  { id: 'xls-pounds-beef', name: 'Pounds of Beef (xls row)', category: 'red-meat', label: 'Red Meat', wfp: 7000, icon: '🥩' },
+  { id: 'xls-pounds-chicken', name: 'Pounds of Chicken (xls row)', category: 'poultry', label: 'Poultry', wfp: 1960, icon: '🍗' },
+  { id: 'xls-pounds-pork', name: 'Pounds of Pork (xls row)', category: 'pork', label: 'Pork', wfp: 2800, icon: '🍖' },
+  { id: 'xls-caught-fish', name: 'Pounds of Caught Fish (xls row)', category: 'fish', label: 'Fish & Seafood', wfp: 1200, icon: '🐟' },
+  { id: 'xls-farm-fish', name: 'Pounds of Farm Fish (xls row)', category: 'fish', label: 'Fish & Seafood', wfp: 2400, icon: '🐟' },
+  { id: 'xls-hunted-meat', name: 'Pounds of Hunted Meat (xls row)', category: 'red-meat', label: 'Red Meat', wfp: 6200, icon: '🦌' },
+  // Spreadsheet-specific dairy rows
+  { id: 'xls-dairy-glass', name: 'Milk/Yogurt/Ice Cream (8 oz glass equivalent)', category: 'dairy', label: 'Dairy', wfp: 320, icon: '🥛' },
+  { id: 'xls-cheese-2oz', name: 'Cheese (2 oz serving)', category: 'dairy', label: 'Dairy', wfp: 300, icon: '🧀' },
 ];
 
 // ────────────────────────────────────────────────────────────
@@ -109,6 +152,7 @@ const CATEGORY_COLORS = {
   'nuts':      '#A1887F',
   'vegetables':'#43A047',
   'fruits':    '#EC407A',
+  'snacks':    '#8E24AA',
   'beverages': '#7E57C2',
 };
 
@@ -263,11 +307,35 @@ function fmtL(liters, decimals = 0) {
 // ────────────────────────────────────────────────────────────
 function searchFoods(query) {
   const q = query.toLowerCase().trim();
-  if (!q) return FOOD_DATABASE.slice(0, 20);
+  if (!q) return FOOD_DATABASE;
+
+  // Common aliases/misspellings from user input (e.g., "pop", "koolaid", "ceral", "veggies").
+  const aliases = {
+    pop: 'soda',
+    soda: 'pop',
+    koolaid: 'kool-aid',
+    'kool aid': 'kool-aid',
+    ceral: 'cereal',
+    veggie: 'vegetables',
+    veggies: 'vegetables',
+    vegtables: 'vegetables',
+    carbs: 'grains',
+    carbohydrates: 'grains',
+    candy: 'snacks',
+    chips: 'snacks',
+    liquor: 'liquor-shot',
+    alcohol: 'beer',
+    'food eaten part 1': 'xls',
+  };
+
+  const expandedTerms = [q, aliases[q]].filter(Boolean);
   return FOOD_DATABASE.filter(f =>
-    f.name.toLowerCase().includes(q) ||
-    f.label.toLowerCase().includes(q) ||
-    f.category.toLowerCase().includes(q)
+    expandedTerms.some(term =>
+      f.name.toLowerCase().includes(term) ||
+      f.label.toLowerCase().includes(term) ||
+      f.category.toLowerCase().includes(term) ||
+      f.id.toLowerCase().includes(term)
+    )
   );
 }
 
