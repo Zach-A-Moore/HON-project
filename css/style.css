@@ -617,49 +617,41 @@ td:last-child { white-space: nowrap; }
 .water-glasses-row {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.5rem;
-  margin: 1rem 0;
+  gap: 0.4rem;
+  margin: 0.875rem 0;
   align-items: center;
   max-height: 120px;
   overflow-y: auto;
-  padding: 0.5rem;
-  border-radius: var(--radius-sm);
-  background: rgba(46, 125, 50, 0.04);
+  padding-right: 0.2rem;
 }
 .glass-icon {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 42px;
-  height: 42px;
-  font-size: 1.55rem;
+  font-size: 1.6rem;
   cursor: pointer;
-  transition: transform var(--transition), filter var(--transition), opacity var(--transition);
+  transition: transform var(--transition), filter var(--transition);
   opacity: 0.25;
   filter: grayscale(1);
-  flex-shrink: 0;
 }
 .glass-icon.filled {
   opacity: 1;
   filter: none;
 }
 .glass-icon:hover {
-  transform: scale(1.15);
+  transform: scale(1.2);
 }
 .gallon-icon {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 54px;
-  height: 42px;
-  font-size: 0.7rem;
-  font-weight: 700;
+  width: 56px;
+  height: 30px;
+  font-size: 0.72rem;
+  font-weight: 600;
   cursor: pointer;
   transition: all var(--transition);
-  opacity: 0.3;
-  background: #f8f8f8;
+  opacity: 0.28;
+  background: #f5f7fb;
   border: 2px solid var(--border);
-  border-radius: 8px;
+  border-radius: 999px;
   color: var(--text-muted);
   flex-shrink: 0;
 }

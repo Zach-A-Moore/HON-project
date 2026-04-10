@@ -54,10 +54,10 @@
 
       <!-- Visual glasses -->
       <div class="water-glasses-row" id="glassesRow"></div>
-      <p class="text-muted" style="font-size:0.79rem;margin-bottom:0.75rem">Cups fill from 0-2.5 L (0.25 L each); above 2.5 L it switches to gallons (3.79 L each)</p>
+      <p class="text-muted" style="font-size:0.79rem;margin-bottom:0.75rem">Click glasses to fill/unfill (each = 250 mL). Above 2.5 L, it switches to gallons.</p>
 
       <div class="range-row">
-        <input type="range" id="waterRange" min="0" max="25" step="0.1" value="0" />
+        <input type="range" id="waterRange" min="0" max="20" step="0.1" value="0" />
         <div class="range-value"><span id="waterRangeVal">0.0</span> L</div>
       </div>
       <div class="form-row mt-2" style="max-width:260px">
@@ -267,7 +267,8 @@ document.addEventListener('DOMContentLoaded', () => {
   linkSliderToInput('waterRange', 'waterExact', 'waterRangeVal', 1, () => updateWater());
   document.getElementById('waterExact').addEventListener('input', () => {
     const v = parseFloat(document.getElementById('waterExact').value) || 0;
-    document.getElementById('waterRange').value    = Math.min(v, 5);
+    const rangeMax = parseFloat(document.getElementById('waterRange').max);
+    document.getElementById('waterRange').value    = Math.min(v, rangeMax);
     document.getElementById('waterRangeVal').textContent = v.toFixed(1);
     updateWater();
   });
@@ -330,7 +331,8 @@ function loadDate(dateStr) {
 function populateForm(entry) {
   // Water
   const wv = entry.drinkingWater;
-  document.getElementById('waterRange').value  = Math.min(wv, 5);
+  const rangeMax = parseFloat(document.getElementById('waterRange').max);
+  document.getElementById('waterRange').value  = Math.min(wv, rangeMax);
   document.getElementById('waterRangeVal').textContent = wv.toFixed(1);
   document.getElementById('waterExact').value  = wv || '';
   updateWater();   // updates glasses + badge
@@ -377,15 +379,8 @@ function updateWater() {
             parseFloat(document.getElementById('waterRange').value) || 0;
   if (currentEntry) currentEntry.drinkingWater = v;
 
-  // Badge - show gallons for amounts above cup range
-  let badgeText;
-  if (v > 2.5) {
-    const gallons = (v / 3.785).toFixed(2);
-    badgeText = `${v.toFixed(1)} L (${gallons} gal)`;
-  } else {
-    badgeText = `${v.toFixed(1)} L`;
-  }
-  document.getElementById('drinkingBadge').textContent = badgeText;
+  // Badge
+  document.getElementById('drinkingBadge').textContent = `${v.toFixed(1)} L`;
 
   // Glasses
   updateGlasses(v);
@@ -421,7 +416,8 @@ function buildGlasses() {
       const curVal = parseFloat(document.getElementById('waterExact').value) || 0;
       const final  = Math.abs(curVal - newVal) < 0.01 ? 0 : newVal;
       document.getElementById('waterExact').value = final;
-      document.getElementById('waterRange').value  = Math.min(final, 25);
+      const rangeMax = parseFloat(document.getElementById('waterRange').max);
+      document.getElementById('waterRange').value  = Math.min(final, rangeMax);
       document.getElementById('waterRangeVal').textContent = final.toFixed(1);
       updateWater();
     });
@@ -441,7 +437,8 @@ function buildGlasses() {
       const newVal = i * 3.785;
       const final  = Math.abs(curVal - newVal) < 0.01 ? 0 : newVal;
       document.getElementById('waterExact').value = final;
-      document.getElementById('waterRange').value = Math.min(final, 25);
+      const rangeMax = parseFloat(document.getElementById('waterRange').max);
+      document.getElementById('waterRange').value = Math.min(final, rangeMax);
       document.getElementById('waterRangeVal').textContent = final.toFixed(1);
       updateWater();
     });
