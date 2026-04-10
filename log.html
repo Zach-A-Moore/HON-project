@@ -12,17 +12,17 @@
 <nav class="navbar">
   <div class="nav-container">
     <a href="index.html" class="nav-brand">
-      <span class="brand-icon">💧</span><span>EcoTrack</span>
+      <span>EcoTrack</span>
     </a>
     <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">
       <span></span><span></span><span></span>
     </button>
     <ul class="nav-links" id="navLinks">
-      <li><a href="index.html"   class="nav-link">📊 Dashboard</a></li>
-      <li><a href="log.html"     class="nav-link">📝 Log Entry</a></li>
-      <li><a href="history.html" class="nav-link">📅 History</a></li>
-      <li><a href="goals.html"   class="nav-link">🎯 Goals</a></li>
-      <li><a href="about.html"   class="nav-link">ℹ️ About</a></li>
+      <li><a href="index.html"   class="nav-link">Dashboard</a></li>
+      <li><a href="log.html"     class="nav-link">Log Entry</a></li>
+      <li><a href="history.html" class="nav-link">History</a></li>
+      <li><a href="goals.html"   class="nav-link">Goals</a></li>
+      <li><a href="about.html"   class="nav-link">About</a></li>
     </ul>
   </div>
 </nav>
@@ -31,11 +31,11 @@
 <main class="page">
   <div class="page-header" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem">
     <div>
-      <h1 class="page-title">📝 Log Entry</h1>
+      <h1 class="page-title">Log Entry</h1>
       <p class="page-subtitle">Record your food, water intake, and home water use</p>
     </div>
     <div style="display:flex;gap:0.75rem;align-items:center;flex-wrap:wrap">
-      <label for="dateInput" class="form-label mb-0" style="white-space:nowrap">📅 Date:</label>
+      <label for="dateInput" class="form-label mb-0" style="white-space:nowrap">Date:</label>
       <input type="date" id="dateInput" class="form-control" style="width:auto" />
     </div>
   </div>
@@ -43,7 +43,7 @@
   <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ Section 1: Drinking Water -->
   <div class="card mb-3">
     <div class="card-header">
-      <span class="card-title">💧 Drinking Water Intake</span>
+      <span class="card-title">Drinking Water Intake</span>
       <span class="badge badge-blue" id="drinkingBadge">0 L</span>
     </div>
     <div class="card-body">
@@ -80,7 +80,7 @@
   <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ Section 2: Food Log -->
   <div class="card mb-3">
     <div class="card-header">
-      <span class="card-title">🍽️ Food Log</span>
+      <span class="card-title">Food Log</span>
       <span class="badge badge-orange" id="foodFPBadge">0 L footprint</span>
     </div>
     <div class="card-body">
@@ -92,7 +92,7 @@
       <!-- Search -->
       <div class="food-search-wrap">
         <input type="text" id="foodSearch" class="form-control food-search-input"
-               placeholder="🔍 Search food (e.g. chicken, rice, apple…)" autocomplete="off" />
+               placeholder="Search food (e.g. chicken, rice, apple...)" autocomplete="off" />
         <div class="food-dropdown" id="foodDropdown"></div>
       </div>
 
@@ -101,7 +101,7 @@
 
       <!-- Running total bar -->
       <div class="footprint-total-bar mt-2" id="footprintTotalBar">
-        <span class="label">🌊 Total Food Footprint</span>
+        <span class="label">Total Food Footprint</span>
         <span class="value" id="footprintTotalVal">0 L</span>
       </div>
 
@@ -116,7 +116,7 @@
   <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ Section 3: Household Water -->
   <div class="card mb-3">
     <div class="card-header">
-      <span class="card-title">🚿 Household Water Use</span>
+      <span class="card-title">Household Water Use</span>
       <span class="badge badge-teal" id="householdBadge">0 L</span>
     </div>
     <div class="card-body">
@@ -128,7 +128,7 @@
       <div class="form-row">
         <!-- Shower -->
         <div class="form-group">
-          <label class="form-label" for="showerMin">🚿 Shower <span class="hint">(7.6 L/min)</span></label>
+          <label class="form-label" for="showerMin">Shower <span class="hint">(7.6 L/min)</span></label>
           <div class="range-row">
             <input type="range" id="showerRange" min="0" max="30" step="1" value="0" />
             <div class="range-value"><span id="showerVal">0</span> min</div>
@@ -138,7 +138,7 @@
         </div>
         <!-- Toilet -->
         <div class="form-group">
-          <label class="form-label" for="toiletFlushes">🚽 Toilet Flushes <span class="hint">(6 L/flush)</span></label>
+          <label class="form-label" for="toiletFlushes">Toilet Flushes <span class="hint">(6 L/flush)</span></label>
           <div class="range-row">
             <input type="range" id="toiletRange" min="0" max="20" step="1" value="0" />
             <div class="range-value"><span id="toiletVal">0</span></div>
@@ -148,7 +148,7 @@
         </div>
         <!-- Laundry -->
         <div class="form-group">
-          <label class="form-label" for="laundryLoads">👕 Laundry <span class="hint">(75 L/load)</span></label>
+          <label class="form-label" for="laundryLoads">Laundry <span class="hint">(75 L/load)</span></label>
           <div class="range-row">
             <input type="range" id="laundryRange" min="0" max="5" step="1" value="0" />
             <div class="range-value"><span id="laundryVal">0</span> loads</div>
@@ -158,7 +158,7 @@
         </div>
         <!-- Dishwasher -->
         <div class="form-group">
-          <label class="form-label" for="dishwasherLoads">🍽 Dishwasher <span class="hint">(23 L/load)</span></label>
+          <label class="form-label" for="dishwasherLoads">Dishwasher <span class="hint">(23 L/load)</span></label>
           <div class="range-row">
             <input type="range" id="dishwasherRange" min="0" max="5" step="1" value="0" />
             <div class="range-value"><span id="dishwasherVal">0</span> loads</div>
@@ -168,7 +168,7 @@
         </div>
         <!-- Hand wash dishes -->
         <div class="form-group">
-          <label class="form-label" for="handDishes">🧽 Hand-Wash Dishes <span class="hint">(38 L/session)</span></label>
+          <label class="form-label" for="handDishes">Hand-Wash Dishes <span class="hint">(38 L/session)</span></label>
           <div class="range-row">
             <input type="range" id="handDishesRange" min="0" max="5" step="1" value="0" />
             <div class="range-value"><span id="handDishesVal">0</span> times</div>
@@ -178,7 +178,7 @@
         </div>
         <!-- Running faucet -->
         <div class="form-group">
-          <label class="form-label" for="faucetMin">🚰 Running Faucet <span class="hint">(7.6 L/min)</span></label>
+          <label class="form-label" for="faucetMin">Running Faucet <span class="hint">(7.6 L/min)</span></label>
           <div class="range-row">
             <input type="range" id="faucetRange" min="0" max="20" step="1" value="0" />
             <div class="range-value"><span id="faucetVal">0</span> min</div>
@@ -190,7 +190,7 @@
 
       <!-- Household total -->
       <div class="footprint-total-bar mt-2">
-        <span class="label">🏠 Total Household Water</span>
+        <span class="label">Total Household Water</span>
         <span class="value" id="householdTotalVal">0 L</span>
       </div>
     </div>
@@ -199,7 +199,7 @@
   <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ Section 4: Notes -->
   <div class="card mb-3">
     <div class="card-header">
-      <span class="card-title">📓 Notes <span style="font-weight:400;font-size:0.85rem;color:var(--text-muted)">(optional)</span></span>
+      <span class="card-title">Notes <span style="font-weight:400;font-size:0.85rem;color:var(--text-muted)">(optional)</span></span>
     </div>
     <div class="card-body">
       <textarea id="notesField" class="form-control" rows="3"
@@ -216,8 +216,8 @@
         <div style="font-size:0.8rem;color:var(--text-muted)">drinking + food footprint + household</div>
       </div>
       <div style="display:flex;gap:0.75rem;flex-wrap:wrap">
-        <button class="btn btn-outline" id="clearBtn">🗑️ Clear All</button>
-        <button class="btn btn-primary btn-lg" id="saveBtn">💾 Save Entry</button>
+        <button class="btn btn-outline" id="clearBtn">Clear All</button>
+        <button class="btn btn-primary btn-lg" id="saveBtn">Save Entry</button>
       </div>
     </div>
   </div>
@@ -235,7 +235,7 @@
 <!-- ── Delete Confirmation Modal ────────────────────────────── -->
 <div class="modal-overlay" id="clearModal">
   <div class="modal">
-    <div class="modal-title">🗑️ Clear All Data?</div>
+    <div class="modal-title">Clear All Data?</div>
     <div class="modal-text">This will erase everything you've entered for this date. You can re-enter data if needed.</div>
     <div class="modal-actions">
       <button class="btn btn-ghost" id="clearCancelBtn">Cancel</button>

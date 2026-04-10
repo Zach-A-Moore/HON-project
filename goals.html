@@ -13,52 +13,52 @@
 <nav class="navbar">
   <div class="nav-container">
     <a href="index.html" class="nav-brand">
-      <span class="brand-icon">💧</span><span>EcoTrack</span>
+      <span>EcoTrack</span>
     </a>
     <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">
       <span></span><span></span><span></span>
     </button>
     <ul class="nav-links" id="navLinks">
-      <li><a href="index.html"   class="nav-link">📊 Dashboard</a></li>
-      <li><a href="log.html"     class="nav-link">📝 Log Entry</a></li>
-      <li><a href="history.html" class="nav-link">📅 History</a></li>
-      <li><a href="goals.html"   class="nav-link">🎯 Goals</a></li>
-      <li><a href="about.html"   class="nav-link">ℹ️ About</a></li>
+      <li><a href="index.html"   class="nav-link">Dashboard</a></li>
+      <li><a href="log.html"     class="nav-link">Log Entry</a></li>
+      <li><a href="history.html" class="nav-link">History</a></li>
+      <li><a href="goals.html"   class="nav-link">Goals</a></li>
+      <li><a href="about.html"   class="nav-link">About</a></li>
     </ul>
   </div>
 </nav>
 
 <main class="page">
   <div class="page-header">
-    <h1 class="page-title">🎯 Goals &amp; Recommendations</h1>
+    <h1 class="page-title">Goals &amp; Recommendations</h1>
     <p class="page-subtitle">Set your targets, track progress, and get personalized tips</p>
   </div>
 
   <!-- ── Set Goals ────────────────────────────────────────────── -->
   <div class="card mb-3">
     <div class="card-header">
-      <span class="card-title">⚙️ Your Daily Goals</span>
-      <button class="btn btn-primary btn-sm" id="saveGoalsBtn">💾 Save Goals</button>
+      <span class="card-title">Your Daily Goals</span>
+      <button class="btn btn-primary btn-sm" id="saveGoalsBtn">Save Goals</button>
     </div>
     <div class="card-body">
       <div class="form-row">
         <div class="form-group">
-          <label class="form-label" for="goalWater">💧 Drinking Water <span class="hint">(liters/day)</span></label>
+          <label class="form-label" for="goalWater">Drinking Water <span class="hint">(liters/day)</span></label>
           <input type="number" id="goalWater" class="form-control" min="0.5" max="10" step="0.1" />
           <div class="form-hint">WHO recommends ~2.5 L/day for adults</div>
         </div>
         <div class="form-group">
-          <label class="form-label" for="goalFoodFP">🍽️ Max Food Footprint <span class="hint">(liters/day)</span></label>
+          <label class="form-label" for="goalFoodFP">Max Food Footprint <span class="hint">(liters/day)</span></label>
           <input type="number" id="goalFoodFP" class="form-control" min="100" max="20000" step="100" />
           <div class="form-hint">Average diet ~3,000–5,000 L/day; aim lower to reduce impact</div>
         </div>
         <div class="form-group">
-          <label class="form-label" for="goalHousehold">🚿 Max Household Water <span class="hint">(liters/day)</span></label>
+          <label class="form-label" for="goalHousehold">Max Household Water <span class="hint">(liters/day)</span></label>
           <input type="number" id="goalHousehold" class="form-control" min="10" max="1000" step="10" />
           <div class="form-hint">US avg ~160–250 L/person/day at home</div>
         </div>
         <div class="form-group">
-          <label class="form-label" for="goalMeat">🥩 Max Meat Servings <span class="hint">(per week)</span></label>
+          <label class="form-label" for="goalMeat">Max Meat Servings <span class="hint">(per week)</span></label>
           <input type="number" id="goalMeat" class="form-control" min="0" max="21" step="1" />
           <div class="form-hint">Reducing meat is one of the biggest ways to cut water footprint</div>
         </div>
@@ -69,7 +69,7 @@
   <!-- ── Progress (Last 7 Days) ───────────────────────────────── -->
   <div class="card mb-3">
     <div class="card-header">
-      <span class="card-title">📊 7-Day Progress</span>
+      <span class="card-title">7-Day Progress</span>
       <span class="text-muted" style="font-size:0.85rem" id="progressRange"></span>
     </div>
     <div class="card-body">
@@ -83,7 +83,7 @@
         <!-- Drinking Water Progress -->
         <div class="mb-3">
           <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.4rem">
-            <span style="font-weight:600;font-size:0.9rem">💧 Avg Drinking Water</span>
+            <span style="font-weight:600;font-size:0.9rem">Avg Drinking Water</span>
             <span class="goal-stat">
               <span class="current" id="pgDrinkCur">—</span>
               <span class="divider">/</span>
@@ -100,7 +100,7 @@
         <!-- Food Footprint Progress -->
         <div class="mb-3">
           <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.4rem">
-            <span style="font-weight:600;font-size:0.9rem">🍽️ Avg Food Footprint</span>
+            <span style="font-weight:600;font-size:0.9rem">Avg Food Footprint</span>
             <span class="goal-stat">
               <span class="current" id="pgFoodCur">—</span>
               <span class="divider">/</span>
@@ -117,7 +117,7 @@
         <!-- Household Progress -->
         <div class="mb-3">
           <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.4rem">
-            <span style="font-weight:600;font-size:0.9rem">🚿 Avg Household Water</span>
+            <span style="font-weight:600;font-size:0.9rem">Avg Household Water</span>
             <span class="goal-stat">
               <span class="current" id="pgHouseCur">—</span>
               <span class="divider">/</span>
@@ -156,7 +156,7 @@
   <!-- ── Goals vs Actuals Chart ───────────────────────────────── -->
   <div class="card mb-3" id="goalsChartCard" style="display:none">
     <div class="card-header">
-      <span class="card-title">📉 Food Footprint vs. Goal — Last 7 Days</span>
+      <span class="card-title">Food Footprint vs. Goal — Last 7 Days</span>
     </div>
     <div class="card-body">
       <div class="chart-container" style="height:260px">
@@ -168,8 +168,8 @@
   <!-- ── Recommendations ──────────────────────────────────────── -->
   <div class="card mb-3">
     <div class="card-header">
-      <span class="card-title">💡 Personalized Recommendations</span>
-      <button class="btn btn-ghost btn-sm" id="refreshRecs">🔄 Refresh</button>
+      <span class="card-title">Personalized Recommendations</span>
+      <button class="btn btn-ghost btn-sm" id="refreshRecs">Refresh</button>
     </div>
     <div class="card-body">
       <div class="rec-list" id="recList">
@@ -181,7 +181,7 @@
   <!-- ── Diet Impact Info ─────────────────────────────────────── -->
   <div class="card mb-3">
     <div class="card-header">
-      <span class="card-title">🌍 Food Choices &amp; Water Impact</span>
+      <span class="card-title">Food Choices &amp; Water Impact</span>
     </div>
     <div class="card-body">
       <p class="mb-2" style="font-size:0.9rem;color:var(--text-muted)">

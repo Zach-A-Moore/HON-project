@@ -13,24 +13,24 @@
 <nav class="navbar">
   <div class="nav-container">
     <a href="index.html" class="nav-brand">
-      <span class="brand-icon">💧</span><span>EcoTrack</span>
+      <span>EcoTrack</span>
     </a>
     <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">
       <span></span><span></span><span></span>
     </button>
     <ul class="nav-links" id="navLinks">
-      <li><a href="index.html"   class="nav-link">📊 Dashboard</a></li>
-      <li><a href="log.html"     class="nav-link">📝 Log Entry</a></li>
-      <li><a href="history.html" class="nav-link">📅 History</a></li>
-      <li><a href="goals.html"   class="nav-link">🎯 Goals</a></li>
-      <li><a href="about.html"   class="nav-link">ℹ️ About</a></li>
+      <li><a href="index.html"   class="nav-link">Dashboard</a></li>
+      <li><a href="log.html"     class="nav-link">Log Entry</a></li>
+      <li><a href="history.html" class="nav-link">History</a></li>
+      <li><a href="goals.html"   class="nav-link">Goals</a></li>
+      <li><a href="about.html"   class="nav-link">About</a></li>
     </ul>
   </div>
 </nav>
 
 <main class="page">
   <div class="page-header">
-    <h1 class="page-title">📅 History</h1>
+    <h1 class="page-title">History</h1>
     <p class="page-subtitle">All your logged entries with filterable stats and trends</p>
   </div>
 
@@ -40,32 +40,28 @@
       <div class="stat-label">Entries Logged</div>
       <div class="stat-value" id="sumEntries">0</div>
       <div class="stat-delta neutral" id="sumDateRange">all time</div>
-      <div class="stat-icon">📋</div>
     </div>
     <div class="stat-card orange">
       <div class="stat-label">Avg Food Footprint</div>
       <div class="stat-value" id="sumAvgFood">—<span class="stat-unit">L</span></div>
       <div class="stat-delta neutral">per day</div>
-      <div class="stat-icon">🍽️</div>
     </div>
     <div class="stat-card teal">
       <div class="stat-label">Avg Drinking Water</div>
       <div class="stat-value" id="sumAvgDrink">—<span class="stat-unit">L</span></div>
       <div class="stat-delta neutral">per day</div>
-      <div class="stat-icon">💧</div>
     </div>
     <div class="stat-card green">
       <div class="stat-label">Total Water Logged</div>
       <div class="stat-value" id="sumTotal">—<span class="stat-unit">L</span></div>
       <div class="stat-delta neutral">food + household</div>
-      <div class="stat-icon">🌊</div>
     </div>
   </div>
 
   <!-- ── Trend Chart ──────────────────────────────────────────── -->
   <div class="card mb-3" id="trendChartCard" style="display:none">
     <div class="card-header">
-      <span class="card-title">📈 Footprint Trend</span>
+      <span class="card-title">Footprint Trend</span>
       <div style="display:flex;gap:0.5rem;align-items:center">
         <span class="badge badge-red" style="font-size:0.72rem">■ Food FP</span>
         <span class="badge badge-teal" style="font-size:0.72rem">■ Household</span>
@@ -86,9 +82,9 @@
         <input type="date" id="filterFrom" class="form-control" title="From date" />
         <span class="text-muted">to</span>
         <input type="date" id="filterTo"   class="form-control" title="To date" />
-        <input type="text" id="filterSearch" class="form-control" placeholder="🔍 Search notes…" />
+        <input type="text" id="filterSearch" class="form-control" placeholder="Search notes..." />
         <button class="btn btn-outline btn-sm" id="filterResetBtn">Reset</button>
-        <button class="btn btn-primary btn-sm" id="exportBtn">⬇️ Export CSV</button>
+        <button class="btn btn-primary btn-sm" id="exportBtn">Export CSV</button>
       </div>
     </div>
   </div>
@@ -96,12 +92,11 @@
   <!-- ── Entries Table ────────────────────────────────────────── -->
   <div class="card">
     <div class="card-header">
-      <span class="card-title">📋 All Entries</span>
+      <span class="card-title">All Entries</span>
       <span class="text-muted" id="entryCount" style="font-size:0.85rem"></span>
     </div>
     <div class="card-body" style="padding:0">
       <div id="noHistoryMsg" class="empty-state">
-        <div class="empty-icon">📝</div>
         <h3>No entries yet</h3>
         <p>Start logging food and water daily to build your history.</p>
         <a href="log.html" class="btn btn-primary">Log Today</a>
@@ -138,7 +133,7 @@
 <!-- Delete Modal -->
 <div class="modal-overlay" id="deleteModal">
   <div class="modal">
-    <div class="modal-title">🗑️ Delete Entry?</div>
+    <div class="modal-title">Delete Entry?</div>
     <div class="modal-text" id="deleteModalText">This will permanently delete this entry.</div>
     <div class="modal-actions">
       <button class="btn btn-ghost" id="deleteCancelBtn">Cancel</button>
@@ -309,7 +304,7 @@ function renderTable() {
         <td>
           <a href="log.html?date=${e.date}" class="btn btn-ghost btn-sm">✏️ Edit</a>
           <button class="btn btn-ghost btn-sm" style="color:var(--danger)"
-                  onclick="confirmDelete('${e.id}','${formatDate(e.date)}')">🗑️</button>
+                  onclick="confirmDelete('${e.id}','${formatDate(e.date)}')">Delete</button>
         </td>
       </tr>
     `;

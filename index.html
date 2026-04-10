@@ -13,18 +13,17 @@
 <nav class="navbar">
   <div class="nav-container">
     <a href="index.html" class="nav-brand">
-      <span class="brand-icon">💧</span>
       <span>EcoTrack</span>
     </a>
     <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">
       <span></span><span></span><span></span>
     </button>
     <ul class="nav-links" id="navLinks">
-      <li><a href="index.html"   class="nav-link">📊 Dashboard</a></li>
-      <li><a href="log.html"     class="nav-link">📝 Log Entry</a></li>
-      <li><a href="history.html" class="nav-link">📅 History</a></li>
-      <li><a href="goals.html"   class="nav-link">🎯 Goals</a></li>
-      <li><a href="about.html"   class="nav-link">ℹ️ About</a></li>
+      <li><a href="index.html"   class="nav-link">Dashboard</a></li>
+      <li><a href="log.html"     class="nav-link">Log Entry</a></li>
+      <li><a href="history.html" class="nav-link">History</a></li>
+      <li><a href="goals.html"   class="nav-link">Goals</a></li>
+      <li><a href="about.html"   class="nav-link">About</a></li>
     </ul>
   </div>
 </nav>
@@ -35,17 +34,17 @@
   <!-- Hero / CTA (shown when no entry today) -->
   <div class="hero-banner" id="heroNolog" style="display:none">
     <div class="hero-text">
-      <h2>👋 Welcome back! No log yet today.</h2>
+      <h2>Welcome back! No log yet today.</h2>
       <p>Track what you eat and drink to see your water footprint in real time.</p>
     </div>
     <div class="hero-actions">
-      <a href="log.html" class="btn btn-white">📝 Log Today's Entry</a>
-      <a href="about.html" class="btn btn-outline-white">ℹ️ Learn More</a>
+      <a href="log.html" class="btn btn-white">Log Today's Entry</a>
+      <a href="about.html" class="btn btn-outline-white">Learn More</a>
     </div>
   </div>
 
   <div class="page-header" id="dashHeader">
-    <h1 class="page-title">📊 Dashboard</h1>
+    <h1 class="page-title">Dashboard</h1>
     <p class="page-subtitle" id="dashSubtitle">Your food &amp; water footprint overview</p>
   </div>
 
@@ -55,25 +54,21 @@
       <div class="stat-label">Drinking Water Today</div>
       <div class="stat-value" id="statDrinking">—</div>
       <div class="stat-delta neutral" id="statDrinkingGoal">goal: 2.5 L</div>
-      <div class="stat-icon">💧</div>
     </div>
     <div class="stat-card orange">
       <div class="stat-label">Food Footprint Today</div>
       <div class="stat-value" id="statFoodFP">—<span class="stat-unit">L</span></div>
       <div class="stat-delta neutral" id="statFoodDelta">virtual water in food</div>
-      <div class="stat-icon">🍽️</div>
     </div>
     <div class="stat-card teal">
       <div class="stat-label">Household Water Today</div>
       <div class="stat-value" id="statHousehold">—<span class="stat-unit">L</span></div>
       <div class="stat-delta neutral" id="statHouseholdDelta">direct water use</div>
-      <div class="stat-icon">🚿</div>
     </div>
     <div class="stat-card green">
       <div class="stat-label">7-Day Avg Footprint</div>
       <div class="stat-value" id="stat7Day">—<span class="stat-unit">L</span></div>
       <div class="stat-delta neutral">food + household</div>
-      <div class="stat-icon">📈</div>
     </div>
   </div>
 
@@ -81,7 +76,7 @@
   <div class="charts-grid">
     <div class="card">
       <div class="card-header">
-        <span class="card-title">💧 Drinking Water — Last 7 Days</span>
+        <span class="card-title">Drinking Water — Last 7 Days</span>
         <span class="badge badge-blue" id="waterGoalBadge">Goal: 2.5 L</span>
       </div>
       <div class="card-body">
@@ -93,7 +88,7 @@
 
     <div class="card">
       <div class="card-header">
-        <span class="card-title">🌊 Food Water Footprint — Last 7 Days</span>
+        <span class="card-title">Food Water Footprint — Last 7 Days</span>
         <a href="about.html#footprint" class="btn btn-ghost btn-sm">What is this?</a>
       </div>
       <div class="card-body">
@@ -108,12 +103,11 @@
   <div class="charts-grid">
     <div class="card">
       <div class="card-header">
-        <span class="card-title">🍽️ Today's Food by Category</span>
+        <span class="card-title">Today's Food by Category</span>
         <span class="text-muted" id="totalFoodItems" style="font-size:0.85rem"></span>
       </div>
       <div class="card-body">
         <div id="noFoodToday" class="empty-state" style="display:none; padding:1.5rem;">
-          <div class="empty-icon">🍽️</div>
           <h3>No food logged today</h3>
           <p>Log a meal to see your food breakdown!</p>
           <a href="log.html" class="btn btn-primary btn-sm">Log Now</a>
@@ -126,7 +120,7 @@
 
     <div class="card">
       <div class="card-header">
-        <span class="card-title">🚿 Household Water — Last 7 Days</span>
+        <span class="card-title">Household Water — Last 7 Days</span>
       </div>
       <div class="card-body">
         <div class="chart-container">
@@ -139,7 +133,7 @@
   <!-- ── Quick Comparison / Fun Facts ────────────────────────── -->
   <div class="card mb-3">
     <div class="card-header">
-      <span class="card-title">💡 Water Footprint Comparisons</span>
+      <span class="card-title">Water Footprint Comparisons</span>
       <span class="text-muted" style="font-size:0.8rem">based on today's food log</span>
     </div>
     <div class="card-body">
@@ -154,13 +148,12 @@
   <!-- ── Recent Entries ──────────────────────────────────────── -->
   <div class="card">
     <div class="card-header">
-      <span class="card-title">📅 Recent Entries</span>
+      <span class="card-title">Recent Entries</span>
       <a href="history.html" class="btn btn-ghost btn-sm">View All →</a>
     </div>
     <div class="card-body" style="padding:0">
       <div id="recentEntriesWrap">
         <div class="empty-state" id="noEntriesMsg">
-          <div class="empty-icon">📝</div>
           <h3>No entries yet</h3>
           <p>Start logging food and water to build your history.</p>
           <a href="log.html" class="btn btn-primary">Start Logging</a>
@@ -170,9 +163,9 @@
             <thead>
               <tr>
                 <th>Date</th>
-                <th>💧 Drinking</th>
-                <th>🍽️ Food FP</th>
-                <th>🚿 Household</th>
+                <th>Drinking</th>
+                <th>Food FP</th>
+                <th>Household</th>
                 <th>Total</th>
                 <th></th>
               </tr>
