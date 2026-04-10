@@ -54,10 +54,10 @@
 
       <!-- Visual glasses -->
       <div class="water-glasses-row" id="glassesRow"></div>
-      <p class="text-muted" style="font-size:0.79rem;margin-bottom:0.75rem">Click glasses to fill/unfill (each = 250 mL)</p>
+      <p class="text-muted" style="font-size:0.79rem;margin-bottom:0.75rem">Click glasses (0.25 L each) or gallons (3.79 L each) to adjust</p>
 
       <div class="range-row">
-        <input type="range" id="waterRange" min="0" max="5" step="0.1" value="0" />
+        <input type="range" id="waterRange" min="0" max="25" step="0.1" value="0" />
         <div class="range-value"><span id="waterRangeVal">0.0</span> L</div>
       </div>
       <div class="form-row mt-2" style="max-width:260px">
@@ -377,8 +377,15 @@ function updateWater() {
             parseFloat(document.getElementById('waterRange').value) || 0;
   if (currentEntry) currentEntry.drinkingWater = v;
 
-  // Badge
-  document.getElementById('drinkingBadge').textContent = `${v.toFixed(1)} L`;
+  // Badge - show gallons for amounts >= 2.4L
+  let badgeText;
+  if (v >= 2.4) {
+    const gallons = (v / 3.785).toFixed(2);
+    badgeText = `${v.toFixed(1)} L (${gallons} gal)`;
+  } else {
+    badgeText = `${v.toFixed(1)} L`;
+  }
+  document.getElementById('drinkingBadge').textContent = badgeText;
 
   // Glasses
   updateGlasses(v);
@@ -390,7 +397,7 @@ function updateWater() {
     cmp.style.display = 'flex';
     const pct = Math.round(v / 2.5 * 100);
     txt.innerHTML = v >= 2.5
-      ? `🎉 You've hit your daily recommended intake of 2.5 L! (${v.toFixed(1)} L = ${pct}% of goal)`
+      ? `You've hit your daily recommended intake of 2.5 L! (${v.toFixed(1)} L = ${pct}% of goal)`
       : `${v.toFixed(1)} L logged — that's ${pct}% of the recommended 2.5 L/day.`;
   } else {
     cmp.style.display = 'none';
@@ -402,18 +409,40 @@ function updateWater() {
 function buildGlasses() {
   const row = document.getElementById('glassesRow');
   row.innerHTML = '';
+  // Show up to 10 glasses (0-2.5L) plus gallon markers for anything above
   for (let i = 0; i < 10; i++) {
     const span = document.createElement('span');
     span.className = 'glass-icon';
-    span.textContent = '🥤';
+    span.textContent = '0.25L';
     span.dataset.index = i;
+    span.data.type = 'glass';
     span.title = `${(i + 1) * 0.25} L`;
     span.addEventListener('click', () => {
       const newVal = (i + 1) * 0.25;
       const curVal = parseFloat(document.getElementById('waterExact').value) || 0;
       const final  = Math.abs(curVal - newVal) < 0.01 ? 0 : newVal;
       document.getElementById('waterExact').value = final;
-      document.getElementById('waterRange').value  = Math.min(final, 5);
+      document.getElementById('waterRange').value  = Math.min(final, 25);
+      document.getElementById('waterRangeVal').textContent = final.toFixed(1);
+      updateWater();
+    });
+    row.appendChild(span);
+  }
+  // Add gallon indicators for higher amounts
+  for (let i = 1; i <= 5; i++) {
+    const span = document.createElement('span');
+    span.className = 'gallon-icon';
+    span.textContent = i + ' gal';
+    span.dataset.gallon = i;
+    span.dataset.type = 'gallon';
+    const litersForGal = i * 3.785;
+    span.title = `${litersForGal.toFixed(2)} L`;
+    span.addEventListener('click', () => {
+      const curVal = parseFloat(document.getElementById('waterExact').value) || 0;
+      const newVal = i * 3.785;
+      const final  = Math.abs(curVal - newVal) < 0.01 ? 0 : newVal;
+      document.getElementById('waterExact').value = final;
+      document.getElementById('waterRange').value = Math.min(final, 25);
       document.getElementById('waterRangeVal').textContent = final.toFixed(1);
       updateWater();
     });
@@ -422,10 +451,24 @@ function buildGlasses() {
 }
 
 function updateGlasses(liters) {
-  const filled = Math.round(liters / 0.25);
-  document.querySelectorAll('#glassesRow .glass-icon').forEach((el, i) => {
-    el.classList.toggle('filled', i < filled);
-  });
+  const glassIcons = document.querySelectorAll('#glassesRow .glass-icon');
+  const galIcons = document.querySelectorAll('#glassesRow .gallon-icon');
+  
+  if (liters < 2.4) {
+    // Show glasses up to 2.5L
+    const filled = Math.round(liters / 0.25);
+    glassIcons.forEach((el, i) => {
+      el.classList.toggle('filled', i < filled);
+    });
+    galIcons.forEach(el => el.classList.remove('filled'));
+  } else {
+    // Show gallons for amounts >= 2.4L
+    glassIcons.forEach(el => el.classList.remove('filled'));
+    const gallons = liters / 3.785;
+    galIcons.forEach((el, i) => {
+      el.classList.toggle('filled', (i + 1) <= gallons);
+    });
+  }
 }
 
 // ── Slider ↔ Number Input Helper ─────────────────────────

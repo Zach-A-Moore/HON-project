@@ -617,18 +617,71 @@ td:last-child { white-space: nowrap; }
 .water-glasses-row {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.4rem;
-  margin: 0.875rem 0;
+  gap: 0.5rem;
+  margin: 1rem 0;
+  align-items: center;
+  max-height: 120px;
+  overflow-y: auto;
+  padding: 0.5rem;
+  border-radius: var(--radius-sm);
+  background: rgba(46, 125, 50, 0.04);
 }
 .glass-icon {
-  font-size: 1.6rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  font-size: 0.75rem;
+  font-weight: 600;
   cursor: pointer;
-  transition: transform var(--transition), filter var(--transition);
-  opacity: 0.25;
-  filter: grayscale(1);
+  transition: all var(--transition);
+  opacity: 0.3;
+  background: #f0f0f0;
+  border: 2px solid var(--border);
+  border-radius: 8px;
+  color: var(--text-muted);
+  flex-shrink: 0;
 }
-.glass-icon.filled { opacity: 1; filter: none; }
-.glass-icon:hover { transform: scale(1.2); }
+.glass-icon.filled {
+  opacity: 1;
+  background: linear-gradient(135deg, var(--secondary-light), var(--accent));
+  border-color: var(--secondary);
+  color: #fff;
+  box-shadow: 0 2px 8px rgba(2, 119, 189, 0.3);
+}
+.glass-icon:hover {
+  transform: scale(1.1);
+  border-color: var(--secondary);
+}
+.gallon-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 52px;
+  height: 52px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all var(--transition);
+  opacity: 0.25;
+  background: #f8f8f8;
+  border: 2px solid var(--border);
+  border-radius: 8px;
+  color: var(--text-muted);
+  flex-shrink: 0;
+}
+.gallon-icon.filled {
+  opacity: 1;
+  background: linear-gradient(135deg, var(--primary), var(--primary-light));
+  border-color: var(--primary);
+  color: #fff;
+  box-shadow: 0 2px 8px rgba(46, 125, 50, 0.4);
+}
+.gallon-icon:hover {
+  transform: scale(1.1);
+  border-color: var(--primary);
+}
 
 /* ── Recommendations ────────────────────────────────────────── */
 .rec-list { display: flex; flex-direction: column; gap: 0.875rem; }
@@ -796,22 +849,28 @@ footer a:hover { text-decoration: underline; }
     flex-direction: column;
     padding: 1rem;
     gap: 0.2rem;
-    transform: translateY(-110%);
+    max-height: calc(100vh - var(--nav-h));
+    overflow-y: auto;
+    transform: translateX(-100%);
     transition: transform 0.3s ease;
     box-shadow: 0 8px 24px rgba(0,0,0,0.25);
     z-index: 999;
   }
-  .nav-links.open { transform: translateY(0); }
+  .nav-links.open { transform: translateX(0); }
   .nav-link { padding: 0.75rem 1rem; width: 100%; border-radius: var(--radius-sm); }
   .charts-grid { grid-template-columns: 1fr; }
   .hero-banner { padding: 1.5rem; }
   .page { padding: 1.5rem 1rem; }
   .stats-grid { grid-template-columns: repeat(2, 1fr); }
   .form-row { grid-template-columns: 1fr; }
+  .water-glasses-row { max-height: 110px; }
 }
 @media (max-width: 480px) {
   .stats-grid { grid-template-columns: 1fr; }
   .page-title { font-size: 1.4rem; }
   .hero-banner { padding: 1.25rem; }
   .hero-text h2 { font-size: 1.2rem; }
+  .water-glasses-row { gap: 0.3rem; max-height: 100px; }
+  .glass-icon { width: 40px; height: 40px; font-size: 0.65rem; }
+  .gallon-icon { width: 44px; height: 44px; font-size: 0.65rem; }
 }
