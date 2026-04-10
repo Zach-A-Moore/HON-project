@@ -630,41 +630,33 @@ td:last-child { white-space: nowrap; }
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 48px;
-  height: 48px;
-  font-size: 0.75rem;
-  font-weight: 600;
+  width: 42px;
+  height: 42px;
+  font-size: 1.55rem;
   cursor: pointer;
-  transition: all var(--transition);
-  opacity: 0.3;
-  background: #f0f0f0;
-  border: 2px solid var(--border);
-  border-radius: 8px;
-  color: var(--text-muted);
+  transition: transform var(--transition), filter var(--transition), opacity var(--transition);
+  opacity: 0.25;
+  filter: grayscale(1);
   flex-shrink: 0;
 }
 .glass-icon.filled {
   opacity: 1;
-  background: linear-gradient(135deg, var(--secondary-light), var(--accent));
-  border-color: var(--secondary);
-  color: #fff;
-  box-shadow: 0 2px 8px rgba(2, 119, 189, 0.3);
+  filter: none;
 }
 .glass-icon:hover {
-  transform: scale(1.1);
-  border-color: var(--secondary);
+  transform: scale(1.15);
 }
 .gallon-icon {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 52px;
-  height: 52px;
+  width: 54px;
+  height: 42px;
   font-size: 0.7rem;
   font-weight: 700;
   cursor: pointer;
   transition: all var(--transition);
-  opacity: 0.25;
+  opacity: 0.3;
   background: #f8f8f8;
   border: 2px solid var(--border);
   border-radius: 8px;
@@ -681,6 +673,9 @@ td:last-child { white-space: nowrap; }
 .gallon-icon:hover {
   transform: scale(1.1);
   border-color: var(--primary);
+}
+.hidden {
+  display: none;
 }
 
 /* ── Recommendations ────────────────────────────────────────── */

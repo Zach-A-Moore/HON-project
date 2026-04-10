@@ -54,7 +54,7 @@
 
       <!-- Visual glasses -->
       <div class="water-glasses-row" id="glassesRow"></div>
-      <p class="text-muted" style="font-size:0.79rem;margin-bottom:0.75rem">Click glasses (0.25 L each) or gallons (3.79 L each) to adjust</p>
+      <p class="text-muted" style="font-size:0.79rem;margin-bottom:0.75rem">Cups fill from 0-2.5 L (0.25 L each); above 2.5 L it switches to gallons (3.79 L each)</p>
 
       <div class="range-row">
         <input type="range" id="waterRange" min="0" max="25" step="0.1" value="0" />
@@ -377,9 +377,9 @@ function updateWater() {
             parseFloat(document.getElementById('waterRange').value) || 0;
   if (currentEntry) currentEntry.drinkingWater = v;
 
-  // Badge - show gallons for amounts >= 2.4L
+  // Badge - show gallons for amounts above cup range
   let badgeText;
-  if (v >= 2.4) {
+  if (v > 2.5) {
     const gallons = (v / 3.785).toFixed(2);
     badgeText = `${v.toFixed(1)} L (${gallons} gal)`;
   } else {
@@ -409,13 +409,12 @@ function updateWater() {
 function buildGlasses() {
   const row = document.getElementById('glassesRow');
   row.innerHTML = '';
-  // Show up to 10 glasses (0-2.5L) plus gallon markers for anything above
+  // Show up to 10 cups (0-2.5L)
   for (let i = 0; i < 10; i++) {
     const span = document.createElement('span');
     span.className = 'glass-icon';
-    span.textContent = '0.25L';
+    span.textContent = '🥤';
     span.dataset.index = i;
-    span.data.type = 'glass';
     span.title = `${(i + 1) * 0.25} L`;
     span.addEventListener('click', () => {
       const newVal = (i + 1) * 0.25;
@@ -428,13 +427,13 @@ function buildGlasses() {
     });
     row.appendChild(span);
   }
-  // Add gallon indicators for higher amounts
-  for (let i = 1; i <= 5; i++) {
+
+  // Add gallon indicators for higher amounts (hidden until needed)
+  for (let i = 1; i <= 7; i++) {
     const span = document.createElement('span');
-    span.className = 'gallon-icon';
+    span.className = 'gallon-icon hidden';
     span.textContent = i + ' gal';
     span.dataset.gallon = i;
-    span.dataset.type = 'gallon';
     const litersForGal = i * 3.785;
     span.title = `${litersForGal.toFixed(2)} L`;
     span.addEventListener('click', () => {
@@ -453,20 +452,28 @@ function buildGlasses() {
 function updateGlasses(liters) {
   const glassIcons = document.querySelectorAll('#glassesRow .glass-icon');
   const galIcons = document.querySelectorAll('#glassesRow .gallon-icon');
-  
-  if (liters < 2.4) {
-    // Show glasses up to 2.5L
+
+  if (liters <= 2.5) {
+    // Cup mode
+    glassIcons.forEach(el => el.classList.remove('hidden'));
+    galIcons.forEach(el => el.classList.add('hidden'));
+
     const filled = Math.round(liters / 0.25);
     glassIcons.forEach((el, i) => {
       el.classList.toggle('filled', i < filled);
     });
     galIcons.forEach(el => el.classList.remove('filled'));
   } else {
-    // Show gallons for amounts >= 2.4L
-    glassIcons.forEach(el => el.classList.remove('filled'));
+    // Gallon mode
+    glassIcons.forEach(el => {
+      el.classList.remove('filled');
+      el.classList.add('hidden');
+    });
+    galIcons.forEach(el => el.classList.remove('hidden'));
+
     const gallons = liters / 3.785;
     galIcons.forEach((el, i) => {
-      el.classList.toggle('filled', (i + 1) <= gallons);
+      el.classList.toggle('filled', (i + 1) <= Math.round(gallons));
     });
   }
 }
