@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EcoTrack — Log Entry</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+<!-- ── Navigation ───────────────────────────────────────────── -->
+<nav class="navbar">
+  <div class="nav-container">
+    <a href="index.html" class="nav-brand">
+      <span class="brand-icon">💧</span><span>EcoTrack</span>
+    </a>
+    <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">
+      <span></span><span></span><span></span>
+    </button>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="index.html"   class="nav-link">📊 Dashboard</a></li>
+      <li><a href="log.html"     class="nav-link">📝 Log Entry</a></li>
+      <li><a href="history.html" class="nav-link">📅 History</a></li>
+      <li><a href="goals.html"   class="nav-link">🎯 Goals</a></li>
+      <li><a href="about.html"   class="nav-link">ℹ️ About</a></li>
+    </ul>
+  </div>
+</nav>
+
+<!-- ── Main ─────────────────────────────────────────────────── -->
+<main class="page">
+  <div class="page-header" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem">
+    <div>
+      <h1 class="page-title">📝 Log Entry</h1>
+      <p class="page-subtitle">Record your food, water intake, and home water use</p>
+    </div>
+    <div style="display:flex;gap:0.75rem;align-items:center;flex-wrap:wrap">
+      <label for="dateInput" class="form-label mb-0" style="white-space:nowrap">📅 Date:</label>
+      <input type="date" id="dateInput" class="form-control" style="width:auto" />
+    </div>
+  </div>
+
+  <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ Section 1: Drinking Water -->
+  <div class="card mb-3">
+    <div class="card-header">
+      <span class="card-title">💧 Drinking Water Intake</span>
+      <span class="badge badge-blue" id="drinkingBadge">0 L</span>
+    </div>
+    <div class="card-body">
+      <p class="text-muted mb-2" style="font-size:0.875rem">
+        Track your personal water consumption (glasses of water, water bottle refills, etc.).
+        The recommended daily intake is ~2.5 L.
+      </p>
+
+      <!-- Visual glasses -->
+      <div class="water-glasses-row" id="glassesRow"></div>
+      <p class="text-muted" style="font-size:0.79rem;margin-bottom:0.75rem">Click glasses to fill/unfill (each = 250 mL)</p>
+
+      <div class="range-row">
+        <input type="range" id="waterRange" min="0" max="5" step="0.1" value="0" />
+        <div class="range-value"><span id="waterRangeVal">0.0</span> L</div>
+      </div>
+      <div class="form-row mt-2" style="max-width:260px">
+        <div class="form-group">
+          <label class="form-label" for="waterExact">Or enter exact amount</label>
+          <input type="number" id="waterExact" class="form-control" min="0" max="20" step="0.1" placeholder="e.g. 2.5" />
+        </div>
+      </div>
+
+      <!-- Comparison note -->
+      <div id="waterComparison" class="rec-item info mt-2" style="display:none">
+        <span class="rec-icon">💡</span>
+        <div>
+          <div class="rec-title" id="waterCompText"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ Section 2: Food Log -->
+  <div class="card mb-3">
+    <div class="card-header">
+      <span class="card-title">🍽️ Food Log</span>
+      <span class="badge badge-orange" id="foodFPBadge">0 L footprint</span>
+    </div>
+    <div class="card-body">
+      <p class="text-muted mb-2" style="font-size:0.875rem">
+        Search and add every food item you consumed. Each item shows its
+        <em>water footprint</em> — the hidden water used to produce it.
+      </p>
+
+      <!-- Search -->
+      <div class="food-search-wrap">
+        <input type="text" id="foodSearch" class="form-control food-search-input"
+               placeholder="🔍 Search food (e.g. chicken, rice, apple…)" autocomplete="off" />
+        <div class="food-dropdown" id="foodDropdown"></div>
+      </div>
+
+      <!-- Food list -->
+      <div class="food-log-list" id="foodLogList"></div>
+
+      <!-- Running total bar -->
+      <div class="footprint-total-bar mt-2" id="footprintTotalBar">
+        <span class="label">🌊 Total Food Footprint</span>
+        <span class="value" id="footprintTotalVal">0 L</span>
+      </div>
+
+      <!-- Category breakdown hint -->
+      <div id="catBreakdown" class="mt-2" style="display:none">
+        <p class="text-muted" style="font-size:0.8rem;margin-bottom:0.5rem">Breakdown by category:</p>
+        <div id="catBreakdownInner" style="display:flex;flex-wrap:wrap;gap:0.4rem;"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ Section 3: Household Water -->
+  <div class="card mb-3">
+    <div class="card-header">
+      <span class="card-title">🚿 Household Water Use</span>
+      <span class="badge badge-teal" id="householdBadge">0 L</span>
+    </div>
+    <div class="card-body">
+      <p class="text-muted mb-3" style="font-size:0.875rem">
+        Track your direct water use at home. These values auto-calculate based on
+        duration/frequency and standard appliance flow rates.
+      </p>
+
+      <div class="form-row">
+        <!-- Shower -->
+        <div class="form-group">
+          <label class="form-label" for="showerMin">🚿 Shower <span class="hint">(7.6 L/min)</span></label>
+          <div class="range-row">
+            <input type="range" id="showerRange" min="0" max="30" step="1" value="0" />
+            <div class="range-value"><span id="showerVal">0</span> min</div>
+          </div>
+          <input type="number" id="showerMin" class="form-control mt-1" min="0" max="120" step="1" placeholder="Minutes" />
+          <div class="form-hint" id="showerLiters">= 0 L</div>
+        </div>
+        <!-- Toilet -->
+        <div class="form-group">
+          <label class="form-label" for="toiletFlushes">🚽 Toilet Flushes <span class="hint">(6 L/flush)</span></label>
+          <div class="range-row">
+            <input type="range" id="toiletRange" min="0" max="20" step="1" value="0" />
+            <div class="range-value"><span id="toiletVal">0</span></div>
+          </div>
+          <input type="number" id="toiletFlushes" class="form-control mt-1" min="0" max="50" step="1" placeholder="# flushes" />
+          <div class="form-hint" id="toiletLiters">= 0 L</div>
+        </div>
+        <!-- Laundry -->
+        <div class="form-group">
+          <label class="form-label" for="laundryLoads">👕 Laundry <span class="hint">(75 L/load)</span></label>
+          <div class="range-row">
+            <input type="range" id="laundryRange" min="0" max="5" step="1" value="0" />
+            <div class="range-value"><span id="laundryVal">0</span> loads</div>
+          </div>
+          <input type="number" id="laundryLoads" class="form-control mt-1" min="0" max="20" step="1" placeholder="# loads" />
+          <div class="form-hint" id="laundryLiters">= 0 L</div>
+        </div>
+        <!-- Dishwasher -->
+        <div class="form-group">
+          <label class="form-label" for="dishwasherLoads">🍽 Dishwasher <span class="hint">(23 L/load)</span></label>
+          <div class="range-row">
+            <input type="range" id="dishwasherRange" min="0" max="5" step="1" value="0" />
+            <div class="range-value"><span id="dishwasherVal">0</span> loads</div>
+          </div>
+          <input type="number" id="dishwasherLoads" class="form-control mt-1" min="0" max="10" step="1" placeholder="# loads" />
+          <div class="form-hint" id="dishwasherLiters">= 0 L</div>
+        </div>
+        <!-- Hand wash dishes -->
+        <div class="form-group">
+          <label class="form-label" for="handDishes">🧽 Hand-Wash Dishes <span class="hint">(38 L/session)</span></label>
+          <div class="range-row">
+            <input type="range" id="handDishesRange" min="0" max="5" step="1" value="0" />
+            <div class="range-value"><span id="handDishesVal">0</span> times</div>
+          </div>
+          <input type="number" id="handDishes" class="form-control mt-1" min="0" max="10" step="1" placeholder="# sessions" />
+          <div class="form-hint" id="handDishesLiters">= 0 L</div>
+        </div>
+        <!-- Running faucet -->
+        <div class="form-group">
+          <label class="form-label" for="faucetMin">🚰 Running Faucet <span class="hint">(7.6 L/min)</span></label>
+          <div class="range-row">
+            <input type="range" id="faucetRange" min="0" max="20" step="1" value="0" />
+            <div class="range-value"><span id="faucetVal">0</span> min</div>
+          </div>
+          <input type="number" id="faucetMin" class="form-control mt-1" min="0" max="60" step="1" placeholder="Minutes" />
+          <div class="form-hint" id="faucetLiters">= 0 L</div>
+        </div>
+      </div>
+
+      <!-- Household total -->
+      <div class="footprint-total-bar mt-2">
+        <span class="label">🏠 Total Household Water</span>
+        <span class="value" id="householdTotalVal">0 L</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ Section 4: Notes -->
+  <div class="card mb-3">
+    <div class="card-header">
+      <span class="card-title">📓 Notes <span style="font-weight:400;font-size:0.85rem;color:var(--text-muted)">(optional)</span></span>
+    </div>
+    <div class="card-body">
+      <textarea id="notesField" class="form-control" rows="3"
+        placeholder="Any extra notes about today — meals eaten out, unusual water use, etc."></textarea>
+    </div>
+  </div>
+
+  <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ Grand Total + Save -->
+  <div class="card mb-3" style="border: 2px solid var(--primary);">
+    <div class="card-body" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem">
+      <div>
+        <div style="font-size:0.85rem;color:var(--text-muted);font-weight:600;text-transform:uppercase;letter-spacing:0.05em">Grand Total Water Use</div>
+        <div style="font-family:var(--font-head);font-size:2.2rem;font-weight:700;color:var(--primary)" id="grandTotal">0 L</div>
+        <div style="font-size:0.8rem;color:var(--text-muted)">drinking + food footprint + household</div>
+      </div>
+      <div style="display:flex;gap:0.75rem;flex-wrap:wrap">
+        <button class="btn btn-outline" id="clearBtn">🗑️ Clear All</button>
+        <button class="btn btn-primary btn-lg" id="saveBtn">💾 Save Entry</button>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<footer>
+  <p>EcoTrack &mdash; Food &amp; Water Footprint Tracker &nbsp;|&nbsp;
+     Data: <a href="https://waterfootprint.org" target="_blank" rel="noopener">Water Footprint Network</a>
+  </p>
+</footer>
+
+<div class="toast" id="toast"></div>
+
+<!-- ── Delete Confirmation Modal ────────────────────────────── -->
+<div class="modal-overlay" id="clearModal">
+  <div class="modal">
+    <div class="modal-title">🗑️ Clear All Data?</div>
+    <div class="modal-text">This will erase everything you've entered for this date. You can re-enter data if needed.</div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" id="clearCancelBtn">Cancel</button>
+      <button class="btn btn-danger" id="clearConfirmBtn">Yes, Clear</button>
+    </div>
+  </div>
+</div>
+
+<script src="js/data.js"></script>
+<script>
+// ── State ─────────────────────────────────────────────────
+let currentEntry = null;
+let foodDropdownResults = [];
+
+// ── Init ──────────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', () => {
+  initNav();
+
+  // Date input
+  const dateInput = document.getElementById('dateInput');
+  const params    = new URLSearchParams(window.location.search);
+  const initDate  = params.get('date') || todayStr();
+  dateInput.value = initDate;
+  dateInput.max   = todayStr();
+  loadDate(initDate);
+  dateInput.addEventListener('change', () => loadDate(dateInput.value));
+
+  // Water slider + exact input sync
+  linkSliderToInput('waterRange', 'waterExact', 'waterRangeVal', 1, () => updateWater());
+  document.getElementById('waterExact').addEventListener('input', () => {
+    const v = parseFloat(document.getElementById('waterExact').value) || 0;
+    document.getElementById('waterRange').value    = Math.min(v, 5);
+    document.getElementById('waterRangeVal').textContent = v.toFixed(1);
+    updateWater();
+  });
+
+  // Household sliders
+  const hLinks = [
+    { range:'showerRange',    num:'showerMin',      val:'showerVal',      liters:'showerLiters',    rate: HOUSEHOLD.showerPerMin,    unit:'min',   mult: HOUSEHOLD.showerPerMin       },
+    { range:'toiletRange',    num:'toiletFlushes',  val:'toiletVal',      liters:'toiletLiters',    rate: HOUSEHOLD.toiletPerFlush,  unit:'',      mult: HOUSEHOLD.toiletPerFlush     },
+    { range:'laundryRange',   num:'laundryLoads',   val:'laundryVal',     liters:'laundryLiters',   rate: HOUSEHOLD.laundryPerLoad,  unit:'loads', mult: HOUSEHOLD.laundryPerLoad     },
+    { range:'dishwasherRange',num:'dishwasherLoads',val:'dishwasherVal',  liters:'dishwasherLiters',rate: HOUSEHOLD.dishwasherPerLoad,unit:'loads',mult: HOUSEHOLD.dishwasherPerLoad  },
+    { range:'handDishesRange',num:'handDishes',     val:'handDishesVal',  liters:'handDishesLiters',rate: HOUSEHOLD.handDishesPerSession,unit:'times',mult: HOUSEHOLD.handDishesPerSession},
+    { range:'faucetRange',    num:'faucetMin',      val:'faucetVal',      liters:'faucetLiters',    rate: HOUSEHOLD.faucetPerMin,    unit:'min',   mult: HOUSEHOLD.faucetPerMin       },
+  ];
+  hLinks.forEach(h => {
+    const range = document.getElementById(h.range);
+    const num   = document.getElementById(h.num);
+    const valEl = document.getElementById(h.val);
+    const litEl = document.getElementById(h.liters);
+
+    const update = (src) => {
+      const v = parseFloat(src.value) || 0;
+      if (src === range) num.value = v;
+      else range.value = Math.min(v, parseFloat(range.max));
+      valEl.textContent = (src === range ? v : parseFloat(num.value) || 0) + (h.unit ? ' ' + h.unit : '');
+      const actual = parseFloat(num.value) || 0;
+      litEl.textContent = `= ${fmtL(actual * h.mult)} L`;
+      updateHouseholdTotal();
+    };
+    range.addEventListener('input', () => update(range));
+    num.addEventListener('input',   () => update(num));
+  });
+
+  // Glasses visual
+  buildGlasses();
+
+  // Food search
+  initFoodSearch();
+
+  // Save / Clear
+  document.getElementById('saveBtn').addEventListener('click', saveCurrentEntry);
+  document.getElementById('clearBtn').addEventListener('click', () => {
+    document.getElementById('clearModal').classList.add('active');
+  });
+  document.getElementById('clearCancelBtn').addEventListener('click', () => {
+    document.getElementById('clearModal').classList.remove('active');
+  });
+  document.getElementById('clearConfirmBtn').addEventListener('click', () => {
+    document.getElementById('clearModal').classList.remove('active');
+    resetForm();
+  });
+});
+
+// ── Load entry for a date ──────────────────────────────────
+function loadDate(dateStr) {
+  const existing = getEntryByDate(dateStr);
+  currentEntry   = existing || newEntry(dateStr);
+  populateForm(currentEntry);
+}
+
+function populateForm(entry) {
+  // Water
+  const wv = entry.drinkingWater;
+  document.getElementById('waterRange').value  = Math.min(wv, 5);
+  document.getElementById('waterRangeVal').textContent = wv.toFixed(1);
+  document.getElementById('waterExact').value  = wv || '';
+  updateWater();   // updates glasses + badge
+
+  // Foods
+  renderFoodList();
+
+  // Household
+  const h = entry.household;
+  const hmap = [
+    ['showerRange','showerMin','showerVal',     h.showerMin,        'min'],
+    ['toiletRange','toiletFlushes','toiletVal', h.toiletFlushes,    ''],
+    ['laundryRange','laundryLoads','laundryVal',h.laundryLoads,     'loads'],
+    ['dishwasherRange','dishwasherLoads','dishwasherVal',h.dishwasherLoads,'loads'],
+    ['handDishesRange','handDishes','handDishesVal',h.handDishesSession,'times'],
+    ['faucetRange','faucetMin','faucetVal',     h.faucetMin,        'min'],
+  ];
+  const rates = [
+    HOUSEHOLD.showerPerMin,HOUSEHOLD.toiletPerFlush,HOUSEHOLD.laundryPerLoad,
+    HOUSEHOLD.dishwasherPerLoad,HOUSEHOLD.handDishesPerSession,HOUSEHOLD.faucetPerMin
+  ];
+  const literIds = ['showerLiters','toiletLiters','laundryLiters','dishwasherLiters','handDishesLiters','faucetLiters'];
+  hmap.forEach(([rid, nid, vid, val, unit], i) => {
+    document.getElementById(rid).value = Math.min(val, parseFloat(document.getElementById(rid).max));
+    document.getElementById(nid).value = val || '';
+    document.getElementById(vid).textContent = val + (unit ? ' ' + unit : '');
+    document.getElementById(literIds[i]).textContent = `= ${fmtL(val * rates[i])} L`;
+  });
+  updateHouseholdTotal();
+
+  // Notes
+  document.getElementById('notesField').value = entry.notes || '';
+  updateGrandTotal();
+}
+
+function resetForm() {
+  currentEntry = newEntry(document.getElementById('dateInput').value);
+  populateForm(currentEntry);
+}
+
+// ── Water Section ─────────────────────────────────────────
+function updateWater() {
+  const v = parseFloat(document.getElementById('waterExact').value) ||
+            parseFloat(document.getElementById('waterRange').value) || 0;
+  if (currentEntry) currentEntry.drinkingWater = v;
+
+  // Badge
+  document.getElementById('drinkingBadge').textContent = `${v.toFixed(1)} L`;
+
+  // Glasses
+  updateGlasses(v);
+
+  // Comparison text
+  const cmp = document.getElementById('waterComparison');
+  const txt = document.getElementById('waterCompText');
+  if (v > 0) {
+    cmp.style.display = 'flex';
+    const pct = Math.round(v / 2.5 * 100);
+    txt.innerHTML = v >= 2.5
+      ? `🎉 You've hit your daily recommended intake of 2.5 L! (${v.toFixed(1)} L = ${pct}% of goal)`
+      : `${v.toFixed(1)} L logged — that's ${pct}% of the recommended 2.5 L/day.`;
+  } else {
+    cmp.style.display = 'none';
+  }
+  updateGrandTotal();
+}
+
+// ── Glasses Visual ────────────────────────────────────────
+function buildGlasses() {
+  const row = document.getElementById('glassesRow');
+  row.innerHTML = '';
+  for (let i = 0; i < 10; i++) {
+    const span = document.createElement('span');
+    span.className = 'glass-icon';
+    span.textContent = '🥤';
+    span.dataset.index = i;
+    span.title = `${(i + 1) * 0.25} L`;
+    span.addEventListener('click', () => {
+      const newVal = (i + 1) * 0.25;
+      const curVal = parseFloat(document.getElementById('waterExact').value) || 0;
+      const final  = Math.abs(curVal - newVal) < 0.01 ? 0 : newVal;
+      document.getElementById('waterExact').value = final;
+      document.getElementById('waterRange').value  = Math.min(final, 5);
+      document.getElementById('waterRangeVal').textContent = final.toFixed(1);
+      updateWater();
+    });
+    row.appendChild(span);
+  }
+}
+
+function updateGlasses(liters) {
+  const filled = Math.round(liters / 0.25);
+  document.querySelectorAll('#glassesRow .glass-icon').forEach((el, i) => {
+    el.classList.toggle('filled', i < filled);
+  });
+}
+
+// ── Slider ↔ Number Input Helper ─────────────────────────
+function linkSliderToInput(rangeId, numId, valId, decimals, cb) {
+  const range = document.getElementById(rangeId);
+  range.addEventListener('input', () => {
+    const v = parseFloat(range.value);
+    document.getElementById(numId).value = v.toFixed(decimals);
+    document.getElementById(valId).textContent = v.toFixed(decimals);
+    if (cb) cb();
+  });
+}
+
+// ── Household Total ───────────────────────────────────────
+function updateHouseholdTotal() {
+  const h = readHouseholdForm();
+  const L = h.showerMin * HOUSEHOLD.showerPerMin
+          + h.toiletFlushes * HOUSEHOLD.toiletPerFlush
+          + h.laundryLoads  * HOUSEHOLD.laundryPerLoad
+          + h.dishwasherLoads * HOUSEHOLD.dishwasherPerLoad
+          + h.handDishesSession * HOUSEHOLD.handDishesPerSession
+          + h.faucetMin * HOUSEHOLD.faucetPerMin;
+  document.getElementById('householdTotalVal').textContent = `${fmtL(L)} L`;
+  document.getElementById('householdBadge').textContent    = `${fmtL(L)} L`;
+  if (currentEntry) currentEntry.household = h;
+  updateGrandTotal();
+}
+
+function readHouseholdForm() {
+  return {
+    showerMin:         parseFloat(document.getElementById('showerMin').value)       || 0,
+    toiletFlushes:     parseFloat(document.getElementById('toiletFlushes').value)   || 0,
+    laundryLoads:      parseFloat(document.getElementById('laundryLoads').value)    || 0,
+    dishwasherLoads:   parseFloat(document.getElementById('dishwasherLoads').value) || 0,
+    handDishesSession: parseFloat(document.getElementById('handDishes').value)      || 0,
+    faucetMin:         parseFloat(document.getElementById('faucetMin').value)       || 0,
+  };
+}
+
+// ── Grand Total ───────────────────────────────────────────
+function updateGrandTotal() {
+  if (!currentEntry) return;
+  const t = calcTotals(currentEntry);
+  document.getElementById('grandTotal').textContent = `${fmtL(t.totalL, 1)} L`;
+}
+
+// ── Food Search ───────────────────────────────────────────
+function initFoodSearch() {
+  const input    = document.getElementById('foodSearch');
+  const dropdown = document.getElementById('foodDropdown');
+
+  input.addEventListener('input', () => {
+    const q = input.value.trim();
+    foodDropdownResults = searchFoods(q);
+    renderDropdown(foodDropdownResults, dropdown);
+  });
+
+  input.addEventListener('focus', () => {
+    if (input.value.trim() === '') foodDropdownResults = searchFoods('');
+    renderDropdown(foodDropdownResults, dropdown);
+  });
+
+  document.addEventListener('click', e => {
+    if (!e.target.closest('.food-search-wrap')) {
+      dropdown.classList.remove('open');
+    }
+  });
+}
+
+function renderDropdown(results, dropdown) {
+  if (!results.length) {
+    dropdown.innerHTML = '<div class="food-dropdown-empty">No foods found. Try a different search term.</div>';
+  } else {
+    dropdown.innerHTML = results.map(f => `
+      <div class="food-dropdown-item" data-id="${f.id}">
+        <span class="food-item-icon">${f.icon}</span>
+        <div class="food-item-info">
+          <div class="food-item-name">${f.name}</div>
+          <div class="food-item-fp">${f.wfp} L of water per serving</div>
+        </div>
+        <span class="food-item-cat">${f.label}</span>
+      </div>
+    `).join('');
+    dropdown.querySelectorAll('.food-dropdown-item').forEach(el => {
+      el.addEventListener('click', () => {
+        addFood(el.dataset.id);
+        dropdown.classList.remove('open');
+        document.getElementById('foodSearch').value = '';
+      });
+    });
+  }
+  dropdown.classList.add('open');
+}
+
+function addFood(foodId) {
+  const food = FOOD_DATABASE.find(f => f.id === foodId);
+  if (!food || !currentEntry) return;
+  const existing = currentEntry.foods.find(f => f.foodId === foodId);
+  if (existing) {
+    existing.qty += 1;
+  } else {
+    currentEntry.foods.push({
+      foodId:   food.id,
+      name:     food.name,
+      icon:     food.icon,
+      category: food.category,
+      wfp:      food.wfp,
+      qty:      1,
+    });
+  }
+  renderFoodList();
+  updateFoodTotal();
+}
+
+function renderFoodList() {
+  const list = document.getElementById('foodLogList');
+  if (!currentEntry || !currentEntry.foods.length) {
+    list.innerHTML = '<p class="text-muted" style="font-size:0.875rem;padding:0.5rem 0">No food added yet. Search above to add items.</p>';
+    updateFoodTotal();
+    return;
+  }
+  list.innerHTML = currentEntry.foods.map((f, i) => `
+    <div class="food-log-item" data-index="${i}">
+      <span class="food-log-icon">${f.icon}</span>
+      <span class="food-log-name">${f.name}</span>
+      <div class="qty-control">
+        <button class="qty-btn" data-action="dec" data-index="${i}">−</button>
+        <span class="qty-num">${f.qty}</span>
+        <button class="qty-btn" data-action="inc" data-index="${i}">+</button>
+      </div>
+      <span class="food-fp-badge">${fmtL(f.wfp * f.qty)} L</span>
+      <button class="remove-food-btn" data-index="${i}" title="Remove">✕</button>
+    </div>
+  `).join('');
+
+  list.querySelectorAll('.qty-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const idx = parseInt(btn.dataset.index);
+      if (btn.dataset.action === 'inc') {
+        currentEntry.foods[idx].qty += 1;
+      } else {
+        currentEntry.foods[idx].qty -= 1;
+        if (currentEntry.foods[idx].qty <= 0) currentEntry.foods.splice(idx, 1);
+      }
+      renderFoodList();
+      updateFoodTotal();
+    });
+  });
+
+  list.querySelectorAll('.remove-food-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      currentEntry.foods.splice(parseInt(btn.dataset.index), 1);
+      renderFoodList();
+      updateFoodTotal();
+    });
+  });
+
+  updateFoodTotal();
+}
+
+function updateFoodTotal() {
+  if (!currentEntry) return;
+  const total = currentEntry.foods.reduce((s, f) => s + f.wfp * f.qty, 0);
+  document.getElementById('footprintTotalVal').textContent = `${fmtL(total)} L`;
+  document.getElementById('foodFPBadge').textContent       = `${fmtL(total)} L footprint`;
+
+  // Category breakdown
+  const bd = document.getElementById('catBreakdown');
+  const inner = document.getElementById('catBreakdownInner');
+  if (!currentEntry.foods.length) {
+    bd.style.display = 'none';
+    updateGrandTotal();
+    return;
+  }
+  bd.style.display = 'block';
+  const catMap = {};
+  currentEntry.foods.forEach(f => {
+    catMap[f.category] = (catMap[f.category] || 0) + f.wfp * f.qty;
+  });
+  inner.innerHTML = Object.entries(catMap)
+    .sort((a, b) => b[1] - a[1])
+    .map(([cat, l]) => {
+      const found = FOOD_DATABASE.find(f => f.category === cat);
+      const label = found ? found.label : cat;
+      return `<span class="badge badge-gray">${label}: ${fmtL(l)} L</span>`;
+    }).join('');
+  updateGrandTotal();
+}
+
+// ── Save Entry ────────────────────────────────────────────
+function saveCurrentEntry() {
+  if (!currentEntry) return;
+  currentEntry.notes    = document.getElementById('notesField').value.trim();
+  currentEntry.household = readHouseholdForm();
+  saveEntry(currentEntry);
+  showToast('Entry saved! 🎉');
+  setTimeout(() => window.location.href = 'index.html', 1200);
+}
+</script>
+</body>
+</html>

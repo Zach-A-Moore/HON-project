@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EcoTrack — Goals &amp; Recommendations</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+</head>
+<body>
+
+<!-- ── Navigation ───────────────────────────────────────────── -->
+<nav class="navbar">
+  <div class="nav-container">
+    <a href="index.html" class="nav-brand">
+      <span class="brand-icon">💧</span><span>EcoTrack</span>
+    </a>
+    <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">
+      <span></span><span></span><span></span>
+    </button>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="index.html"   class="nav-link">📊 Dashboard</a></li>
+      <li><a href="log.html"     class="nav-link">📝 Log Entry</a></li>
+      <li><a href="history.html" class="nav-link">📅 History</a></li>
+      <li><a href="goals.html"   class="nav-link">🎯 Goals</a></li>
+      <li><a href="about.html"   class="nav-link">ℹ️ About</a></li>
+    </ul>
+  </div>
+</nav>
+
+<main class="page">
+  <div class="page-header">
+    <h1 class="page-title">🎯 Goals &amp; Recommendations</h1>
+    <p class="page-subtitle">Set your targets, track progress, and get personalized tips</p>
+  </div>
+
+  <!-- ── Set Goals ────────────────────────────────────────────── -->
+  <div class="card mb-3">
+    <div class="card-header">
+      <span class="card-title">⚙️ Your Daily Goals</span>
+      <button class="btn btn-primary btn-sm" id="saveGoalsBtn">💾 Save Goals</button>
+    </div>
+    <div class="card-body">
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label" for="goalWater">💧 Drinking Water <span class="hint">(liters/day)</span></label>
+          <input type="number" id="goalWater" class="form-control" min="0.5" max="10" step="0.1" />
+          <div class="form-hint">WHO recommends ~2.5 L/day for adults</div>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="goalFoodFP">🍽️ Max Food Footprint <span class="hint">(liters/day)</span></label>
+          <input type="number" id="goalFoodFP" class="form-control" min="100" max="20000" step="100" />
+          <div class="form-hint">Average diet ~3,000–5,000 L/day; aim lower to reduce impact</div>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="goalHousehold">🚿 Max Household Water <span class="hint">(liters/day)</span></label>
+          <input type="number" id="goalHousehold" class="form-control" min="10" max="1000" step="10" />
+          <div class="form-hint">US avg ~160–250 L/person/day at home</div>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="goalMeat">🥩 Max Meat Servings <span class="hint">(per week)</span></label>
+          <input type="number" id="goalMeat" class="form-control" min="0" max="21" step="1" />
+          <div class="form-hint">Reducing meat is one of the biggest ways to cut water footprint</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Progress (Last 7 Days) ───────────────────────────────── -->
+  <div class="card mb-3">
+    <div class="card-header">
+      <span class="card-title">📊 7-Day Progress</span>
+      <span class="text-muted" style="font-size:0.85rem" id="progressRange"></span>
+    </div>
+    <div class="card-body">
+      <div id="noProgressData" class="empty-state" style="padding:1.5rem;display:none">
+        <div class="empty-icon">📊</div>
+        <h3>No data yet for this period</h3>
+        <p>Log a few days to see your progress toward goals.</p>
+        <a href="log.html" class="btn btn-primary btn-sm">Start Logging</a>
+      </div>
+      <div id="progressCards">
+        <!-- Drinking Water Progress -->
+        <div class="mb-3">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.4rem">
+            <span style="font-weight:600;font-size:0.9rem">💧 Avg Drinking Water</span>
+            <span class="goal-stat">
+              <span class="current" id="pgDrinkCur">—</span>
+              <span class="divider">/</span>
+              <span class="target" id="pgDrinkGoal">—</span>
+              <span class="divider"> L</span>
+            </span>
+          </div>
+          <div class="progress-wrap">
+            <div class="progress-fill blue" id="pgDrinkBar" style="width:0%"></div>
+          </div>
+          <div class="form-hint mt-1" id="pgDrinkNote"></div>
+        </div>
+
+        <!-- Food Footprint Progress -->
+        <div class="mb-3">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.4rem">
+            <span style="font-weight:600;font-size:0.9rem">🍽️ Avg Food Footprint</span>
+            <span class="goal-stat">
+              <span class="current" id="pgFoodCur">—</span>
+              <span class="divider">/</span>
+              <span class="target" id="pgFoodGoal">—</span>
+              <span class="divider"> L</span>
+            </span>
+          </div>
+          <div class="progress-wrap">
+            <div class="progress-fill orange" id="pgFoodBar" style="width:0%"></div>
+          </div>
+          <div class="form-hint mt-1" id="pgFoodNote"></div>
+        </div>
+
+        <!-- Household Progress -->
+        <div class="mb-3">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.4rem">
+            <span style="font-weight:600;font-size:0.9rem">🚿 Avg Household Water</span>
+            <span class="goal-stat">
+              <span class="current" id="pgHouseCur">—</span>
+              <span class="divider">/</span>
+              <span class="target" id="pgHouseGoal">—</span>
+              <span class="divider"> L</span>
+            </span>
+          </div>
+          <div class="progress-wrap">
+            <div class="progress-fill teal" id="pgHouseBar" style="width:0%"></div>
+          </div>
+          <div class="form-hint mt-1" id="pgHouseNote"></div>
+        </div>
+
+        <!-- Days on goal -->
+        <div style="display:flex;gap:1rem;flex-wrap:wrap;margin-top:0.5rem">
+          <div class="stat-card blue" style="flex:1;min-width:150px;padding:1rem">
+            <div class="stat-label">Days Hitting Water Goal</div>
+            <div class="stat-value" id="daysWaterGoal">—</div>
+            <div class="stat-delta neutral">in last 7 days</div>
+          </div>
+          <div class="stat-card orange" style="flex:1;min-width:150px;padding:1rem">
+            <div class="stat-label">Days Under Food Goal</div>
+            <div class="stat-value" id="daysFoodGoal">—</div>
+            <div class="stat-delta neutral">in last 7 days</div>
+          </div>
+          <div class="stat-card teal" style="flex:1;min-width:150px;padding:1rem">
+            <div class="stat-label">Log Streak</div>
+            <div class="stat-value" id="streak">—</div>
+            <div class="stat-delta neutral">consecutive days</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Goals vs Actuals Chart ───────────────────────────────── -->
+  <div class="card mb-3" id="goalsChartCard" style="display:none">
+    <div class="card-header">
+      <span class="card-title">📉 Food Footprint vs. Goal — Last 7 Days</span>
+    </div>
+    <div class="card-body">
+      <div class="chart-container" style="height:260px">
+        <canvas id="goalsChart"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Recommendations ──────────────────────────────────────── -->
+  <div class="card mb-3">
+    <div class="card-header">
+      <span class="card-title">💡 Personalized Recommendations</span>
+      <button class="btn btn-ghost btn-sm" id="refreshRecs">🔄 Refresh</button>
+    </div>
+    <div class="card-body">
+      <div class="rec-list" id="recList">
+        <!-- populated by JS -->
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Diet Impact Info ─────────────────────────────────────── -->
+  <div class="card mb-3">
+    <div class="card-header">
+      <span class="card-title">🌍 Food Choices &amp; Water Impact</span>
+    </div>
+    <div class="card-body">
+      <p class="mb-2" style="font-size:0.9rem;color:var(--text-muted)">
+        The chart below shows average water footprint (L per serving) for common food categories.
+        Use this to make more sustainable food choices.
+      </p>
+      <div class="chart-container" style="height:280px">
+        <canvas id="impactChart"></canvas>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<footer>
+  <p>EcoTrack &mdash; Food &amp; Water Footprint Tracker &nbsp;|&nbsp;
+     Data: <a href="https://waterfootprint.org" target="_blank" rel="noopener">Water Footprint Network</a>
+  </p>
+</footer>
+
+<div class="toast" id="toast"></div>
+<script src="js/data.js"></script>
+<script>
+Chart.defaults.font.family = "'Inter', system-ui, sans-serif";
+Chart.defaults.color = '#607D8B';
+
+let goalsRadarChart = null;
+
+document.addEventListener('DOMContentLoaded', () => {
+  initNav();
+  loadGoalsForm();
+  renderProgress();
+  renderRecommendations();
+  renderImpactChart();
+
+  document.getElementById('saveGoalsBtn').addEventListener('click', () => {
+    const g = {
+      dailyWaterLiters:       parseFloat(document.getElementById('goalWater').value)    || 2.5,
+      maxFoodFootprintLiters: parseFloat(document.getElementById('goalFoodFP').value)   || 4000,
+      maxHouseholdLiters:     parseFloat(document.getElementById('goalHousehold').value)|| 200,
+      maxMeatPerWeek:         parseInt(document.getElementById('goalMeat').value)        || 5,
+    };
+    saveGoals(g);
+    renderProgress();
+    renderRecommendations();
+    showToast('Goals saved! 🎯');
+  });
+
+  document.getElementById('refreshRecs').addEventListener('click', renderRecommendations);
+});
+
+function loadGoalsForm() {
+  const g = getGoals();
+  document.getElementById('goalWater').value     = g.dailyWaterLiters;
+  document.getElementById('goalFoodFP').value    = g.maxFoodFootprintLiters;
+  document.getElementById('goalHousehold').value = g.maxHouseholdLiters;
+  document.getElementById('goalMeat').value      = g.maxMeatPerWeek;
+}
+
+function renderProgress() {
+  const goals   = getGoals();
+  const entries = getEntries();
+  const days    = last7Days();
+  const weekEntries = days.map(d => getEntryByDate(d)).filter(Boolean);
+
+  const rangeEl = document.getElementById('progressRange');
+  if (!weekEntries.length) {
+    document.getElementById('noProgressData').style.display   = 'block';
+    document.getElementById('progressCards').style.display    = 'none';
+    document.getElementById('goalsChartCard').style.display   = 'none';
+    rangeEl.textContent = '';
+    return;
+  }
+  document.getElementById('noProgressData').style.display  = 'none';
+  document.getElementById('progressCards').style.display   = 'block';
+  rangeEl.textContent = `${formatDate(days[0])} – ${formatDate(days[6])}`;
+
+  const avgDrink = weekEntries.reduce((s, e) => s + e.drinkingWater, 0) / weekEntries.length;
+  const avgFood  = weekEntries.reduce((s, e) => s + calcTotals(e).foodFP, 0) / weekEntries.length;
+  const avgHouse = weekEntries.reduce((s, e) => s + calcTotals(e).householdL, 0) / weekEntries.length;
+
+  // Drinking water
+  const drinkPct = Math.min(avgDrink / goals.dailyWaterLiters * 100, 100);
+  setProgress('pgDrink', avgDrink.toFixed(1), goals.dailyWaterLiters,
+    drinkPct, 'blue',
+    avgDrink >= goals.dailyWaterLiters
+      ? '✅ Great! You\'re hitting your hydration goal on average.'
+      : `⬆️ Try to drink ${(goals.dailyWaterLiters - avgDrink).toFixed(1)} more L/day on average.`
+  );
+
+  // Food footprint (lower is better — invert)
+  const foodPct   = Math.min(avgFood / goals.maxFoodFootprintLiters * 100, 100);
+  const foodColor = avgFood <= goals.maxFoodFootprintLiters ? 'green' : 'red';
+  setProgress('pgFood', fmtL(avgFood), fmtL(goals.maxFoodFootprintLiters),
+    foodPct, foodColor,
+    avgFood <= goals.maxFoodFootprintLiters
+      ? '✅ Your average food footprint is within goal.'
+      : `⚠️ Your food footprint is ${fmtL(avgFood - goals.maxFoodFootprintLiters)} L over goal on average.`
+  );
+
+  // Household
+  const housePct   = Math.min(avgHouse / goals.maxHouseholdLiters * 100, 100);
+  const houseColor = avgHouse <= goals.maxHouseholdLiters ? 'green' : 'red';
+  setProgress('pgHouse', fmtL(avgHouse), fmtL(goals.maxHouseholdLiters),
+    housePct, houseColor,
+    avgHouse <= goals.maxHouseholdLiters
+      ? '✅ Household water use is within goal.'
+      : `⚠️ Avg household use is ${fmtL(avgHouse - goals.maxHouseholdLiters)} L over goal.`
+  );
+
+  // Days on goal
+  const daysWater = weekEntries.filter(e => e.drinkingWater >= goals.dailyWaterLiters).length;
+  const daysFood  = weekEntries.filter(e => calcTotals(e).foodFP <= goals.maxFoodFootprintLiters).length;
+  document.getElementById('daysWaterGoal').textContent = `${daysWater}/7`;
+  document.getElementById('daysFoodGoal').textContent  = `${daysFood}/7`;
+
+  // Streak
+  let streak = 0;
+  const allEntries = getEntries().map(e => e.date);
+  const today = todayStr();
+  let check = new Date(today);
+  while (true) {
+    const ds = check.toISOString().split('T')[0];
+    if (allEntries.includes(ds)) {
+      streak++;
+      check.setDate(check.getDate() - 1);
+    } else break;
+  }
+  document.getElementById('streak').textContent = streak;
+
+  // Goals chart
+  renderGoalsChart(days, weekEntries, goals);
+}
+
+function setProgress(prefix, cur, goal, pct, color, note) {
+  document.getElementById(prefix + 'Cur').textContent  = cur;
+  document.getElementById(prefix + 'Goal').textContent = goal;
+  document.getElementById(prefix + 'Bar').style.width  = pct + '%';
+  document.getElementById(prefix + 'Bar').className    = `progress-fill ${color}`;
+  document.getElementById(prefix + 'Note').textContent = note;
+}
+
+function renderGoalsChart(days, entries, goals) {
+  const card = document.getElementById('goalsChartCard');
+  card.style.display = 'block';
+  const labels  = days.map(formatDate);
+  const foodFPs = days.map(d => {
+    const e = entries.find(x => x.date === d);
+    return e ? calcTotals(e).foodFP : null;
+  });
+
+  const ctx = document.getElementById('goalsChart').getContext('2d');
+  if (goalsRadarChart) goalsRadarChart.destroy();
+
+  const gradient = ctx.createLinearGradient(0, 0, 0, 260);
+  gradient.addColorStop(0, 'rgba(230,81,0,0.2)');
+  gradient.addColorStop(1, 'rgba(230,81,0,0.01)');
+
+  goalsRadarChart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels,
+      datasets: [
+        {
+          label: 'Food Footprint (L)',
+          data: foodFPs,
+          backgroundColor: foodFPs.map(v =>
+            v === null ? 'rgba(144,164,174,0.3)' :
+            v <= goals.maxFoodFootprintLiters ? 'rgba(46,125,50,0.7)' : 'rgba(229,57,53,0.7)'
+          ),
+          borderColor: foodFPs.map(v =>
+            v === null ? '#90A4AE' :
+            v <= goals.maxFoodFootprintLiters ? '#2E7D32' : '#E53935'
+          ),
+          borderWidth: 2,
+          borderRadius: 6,
+        },
+        {
+          label: 'Goal',
+          data: days.map(() => goals.maxFoodFootprintLiters),
+          type: 'line',
+          borderColor: '#0277BD',
+          borderWidth: 2,
+          borderDash: [6, 4],
+          pointRadius: 0,
+          fill: false,
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { position: 'bottom', labels: { usePointStyle: true, boxWidth: 8 } },
+        tooltip: {
+          callbacks: {
+            label: ctx => `${ctx.dataset.label}: ${ctx.parsed.y != null ? fmtL(ctx.parsed.y) : 'No data'} L`
+          }
+        }
+      },
+      scales: {
+        y: { beginAtZero: true, ticks: { callback: v => fmtL(v) + ' L' }, grid: { color: 'rgba(0,0,0,0.05)' } },
+        x: { grid: { display: false } }
+      }
+    }
+  });
+}
+
+// ── Recommendations Engine ────────────────────────────────
+function renderRecommendations() {
+  const entries = getEntries();
+  const goals   = getGoals();
+  const days    = last7Days();
+  const week    = days.map(d => getEntryByDate(d)).filter(Boolean);
+  const allFoods = week.flatMap(e => e.foods);
+  const recs    = [];
+
+  if (!week.length) {
+    document.getElementById('recList').innerHTML = `
+      <div class="rec-item info">
+        <span class="rec-icon">📋</span>
+        <div>
+          <div class="rec-title">Start Logging to Get Recommendations</div>
+          <div class="rec-desc">Log a few days of food and water use and we'll generate personalized tips based on your actual habits.</div>
+        </div>
+      </div>`;
+    return;
+  }
+
+  const avgDrink  = week.reduce((s, e) => s + e.drinkingWater, 0) / week.length;
+  const avgFoodFP = week.reduce((s, e) => s + calcTotals(e).foodFP, 0) / week.length;
+  const avgHouse  = week.reduce((s, e) => s + calcTotals(e).householdL, 0) / week.length;
+
+  // Drinking water
+  if (avgDrink >= goals.dailyWaterLiters) {
+    recs.push({ type: 'good', icon: '💧', title: 'Hydration Goal On Track!',
+      desc: `You're averaging ${avgDrink.toFixed(1)} L/day — meeting your ${goals.dailyWaterLiters} L goal. Keep it up!` });
+  } else {
+    recs.push({ type: 'warning', icon: '💧', title: 'Increase Daily Water Intake',
+      desc: `You're averaging ${avgDrink.toFixed(1)} L/day. Try adding ${(goals.dailyWaterLiters - avgDrink).toFixed(1)} L more — carrying a reusable bottle helps!` });
+  }
+
+  // Meat consumption
+  const meatFoods = allFoods.filter(f => ['red-meat','pork','poultry'].includes(f.category));
+  const meatServings = meatFoods.reduce((s, f) => s + f.qty, 0);
+  if (meatServings > goals.maxMeatPerWeek) {
+    const beefFP = allFoods.filter(f => f.foodId === 'beef').reduce((s, f) => s + f.qty, 0);
+    recs.push({ type: 'warning', icon: '🥩', title: 'High Meat Consumption',
+      desc: `You had ${meatServings} meat servings this week (goal: ≤${goals.maxMeatPerWeek}). Replacing one beef meal with legumes saves ~1,900 L of water. Try swapping a meal with lentils or chickpeas!` });
+  } else if (meatServings > 0) {
+    recs.push({ type: 'good', icon: '🥩', title: 'Meat Consumption Within Goal',
+      desc: `${meatServings} meat servings this week — within your ${goals.maxMeatPerWeek}/week goal. Well done!` });
+  }
+
+  // Food footprint
+  if (avgFoodFP > goals.maxFoodFootprintLiters) {
+    const top = [...allFoods].sort((a, b) => (b.wfp * b.qty) - (a.wfp * a.qty)).slice(0, 3);
+    recs.push({ type: 'warning', icon: '🍽️', title: 'Food Footprint Over Goal',
+      desc: `Avg ${fmtL(avgFoodFP)} L/day vs. goal of ${fmtL(goals.maxFoodFootprintLiters)} L. Your biggest contributors: ${top.map(f => `${f.icon} ${f.name}`).join(', ')}.` });
+  } else {
+    recs.push({ type: 'good', icon: '🍽️', title: 'Food Footprint Under Control',
+      desc: `Great work! Your avg food footprint (${fmtL(avgFoodFP)} L/day) is under your ${fmtL(goals.maxFoodFootprintLiters)} L goal.` });
+  }
+
+  // Household water
+  const avgShower = week.reduce((s, e) => s + e.household.showerMin, 0) / week.length;
+  if (avgShower > 10) {
+    recs.push({ type: 'tip', icon: '🚿', title: 'Shorten Your Shower',
+      desc: `You're averaging ${avgShower.toFixed(0)} min/shower. Cutting just 2 minutes saves ~15 L per shower — that's ~5,000 L per year!` });
+  }
+
+  if (avgHouse > goals.maxHouseholdLiters) {
+    recs.push({ type: 'warning', icon: '🏠', title: 'Household Water Use High',
+      desc: `Avg ${fmtL(avgHouse)} L/day at home (goal: ${fmtL(goals.maxHouseholdLiters)} L). Check for running faucets, fix leaks, and only run dishwasher/laundry with full loads.` });
+  }
+
+  // Vegetable/fruit variety
+  const vegFruitServings = allFoods.filter(f => ['vegetables','fruits'].includes(f.category)).length;
+  if (vegFruitServings < 7) {
+    recs.push({ type: 'tip', icon: '🥦', title: 'Eat More Vegetables & Fruits',
+      desc: `You had only ${vegFruitServings} vegetable/fruit servings this week. Plant-based foods have a much lower water footprint than meat — broccoli uses 35 L/serving vs. beef at 2,310 L.` });
+  }
+
+  // Coffee
+  const coffeeCount = allFoods.filter(f => f.foodId === 'coffee').reduce((s, f) => s + f.qty, 0);
+  if (coffeeCount > 14) {
+    recs.push({ type: 'tip', icon: '☕', title: 'Consider Cutting Back on Coffee',
+      desc: `${coffeeCount} cups of coffee logged this week. Each cup uses ~140 L. Swapping a few for tea (30 L/cup) could save ${coffeeCount * 55} L this week!` });
+  }
+
+  document.getElementById('recList').innerHTML = recs.map(r => `
+    <div class="rec-item ${r.type}">
+      <span class="rec-icon">${r.icon}</span>
+      <div>
+        <div class="rec-title">${r.title}</div>
+        <div class="rec-desc">${r.desc}</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+// ── Food Impact Reference Chart ───────────────────────────
+function renderImpactChart() {
+  const categories = [
+    { label: 'Beef',       wfp: 2310, color: '#E53935' },
+    { label: 'Lamb',       wfp: 1950, color: '#EF5350' },
+    { label: 'Pork',       wfp:  898, color: '#FB8C00' },
+    { label: 'Poultry',    wfp:  649, color: '#FDD835' },
+    { label: 'Fish',       wfp:  486, color: '#42A5F5' },
+    { label: 'Dairy',      wfp:  293, color: '#26C6DA' },
+    { label: 'Eggs',       wfp:  196, color: '#FFA726' },
+    { label: 'Nuts',       wfp:  391, color: '#8D6E63' },
+    { label: 'Legumes',    wfp:  356, color: '#66BB6A' },
+    { label: 'Grains',     wfp:  200, color: '#A1887F' },
+    { label: 'Fruits',     wfp:  121, color: '#EC407A' },
+    { label: 'Vegetables', wfp:   46, color: '#43A047' },
+  ];
+
+  const ctx = document.getElementById('impactChart').getContext('2d');
+  new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: categories.map(c => c.label),
+      datasets: [{
+        label: 'Avg Water Footprint (L/serving)',
+        data:  categories.map(c => c.wfp),
+        backgroundColor: categories.map(c => c.color + 'BB'),
+        borderColor:     categories.map(c => c.color),
+        borderWidth: 2,
+        borderRadius: 6,
+      }]
+    },
+    options: {
+      indexAxis: 'y',
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            label: ctx => `${ctx.parsed.x} L per serving`
+          }
+        }
+      },
+      scales: {
+        x: {
+          beginAtZero: true,
+          grid: { color: 'rgba(0,0,0,0.05)' },
+          ticks: { callback: v => v + ' L' }
+        },
+        y: { grid: { display: false } }
+      }
+    }
+  });
+}
+</script>
+</body>
+</html>

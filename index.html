@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EcoTrack — Dashboard</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+</head>
+<body>
+
+<!-- ── Navigation ──────────────────────────────────────────── -->
+<nav class="navbar">
+  <div class="nav-container">
+    <a href="index.html" class="nav-brand">
+      <span class="brand-icon">💧</span>
+      <span>EcoTrack</span>
+    </a>
+    <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">
+      <span></span><span></span><span></span>
+    </button>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="index.html"   class="nav-link">📊 Dashboard</a></li>
+      <li><a href="log.html"     class="nav-link">📝 Log Entry</a></li>
+      <li><a href="history.html" class="nav-link">📅 History</a></li>
+      <li><a href="goals.html"   class="nav-link">🎯 Goals</a></li>
+      <li><a href="about.html"   class="nav-link">ℹ️ About</a></li>
+    </ul>
+  </div>
+</nav>
+
+<!-- ── Main Content ─────────────────────────────────────────── -->
+<main class="page">
+
+  <!-- Hero / CTA (shown when no entry today) -->
+  <div class="hero-banner" id="heroNolog" style="display:none">
+    <div class="hero-text">
+      <h2>👋 Welcome back! No log yet today.</h2>
+      <p>Track what you eat and drink to see your water footprint in real time.</p>
+    </div>
+    <div class="hero-actions">
+      <a href="log.html" class="btn btn-white">📝 Log Today's Entry</a>
+      <a href="about.html" class="btn btn-outline-white">ℹ️ Learn More</a>
+    </div>
+  </div>
+
+  <div class="page-header" id="dashHeader">
+    <h1 class="page-title">📊 Dashboard</h1>
+    <p class="page-subtitle" id="dashSubtitle">Your food &amp; water footprint overview</p>
+  </div>
+
+  <!-- ── Stat Cards ─────────────────────────────────────────── -->
+  <div class="stats-grid" id="statsGrid">
+    <div class="stat-card blue">
+      <div class="stat-label">Drinking Water Today</div>
+      <div class="stat-value" id="statDrinking">—</div>
+      <div class="stat-delta neutral" id="statDrinkingGoal">goal: 2.5 L</div>
+      <div class="stat-icon">💧</div>
+    </div>
+    <div class="stat-card orange">
+      <div class="stat-label">Food Footprint Today</div>
+      <div class="stat-value" id="statFoodFP">—<span class="stat-unit">L</span></div>
+      <div class="stat-delta neutral" id="statFoodDelta">virtual water in food</div>
+      <div class="stat-icon">🍽️</div>
+    </div>
+    <div class="stat-card teal">
+      <div class="stat-label">Household Water Today</div>
+      <div class="stat-value" id="statHousehold">—<span class="stat-unit">L</span></div>
+      <div class="stat-delta neutral" id="statHouseholdDelta">direct water use</div>
+      <div class="stat-icon">🚿</div>
+    </div>
+    <div class="stat-card green">
+      <div class="stat-label">7-Day Avg Footprint</div>
+      <div class="stat-value" id="stat7Day">—<span class="stat-unit">L</span></div>
+      <div class="stat-delta neutral">food + household</div>
+      <div class="stat-icon">📈</div>
+    </div>
+  </div>
+
+  <!-- ── Charts Row 1 ────────────────────────────────────────── -->
+  <div class="charts-grid">
+    <div class="card">
+      <div class="card-header">
+        <span class="card-title">💧 Drinking Water — Last 7 Days</span>
+        <span class="badge badge-blue" id="waterGoalBadge">Goal: 2.5 L</span>
+      </div>
+      <div class="card-body">
+        <div class="chart-container">
+          <canvas id="chartWater"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <span class="card-title">🌊 Food Water Footprint — Last 7 Days</span>
+        <a href="about.html#footprint" class="btn btn-ghost btn-sm">What is this?</a>
+      </div>
+      <div class="card-body">
+        <div class="chart-container">
+          <canvas id="chartFootprint"></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Charts Row 2 ────────────────────────────────────────── -->
+  <div class="charts-grid">
+    <div class="card">
+      <div class="card-header">
+        <span class="card-title">🍽️ Today's Food by Category</span>
+        <span class="text-muted" id="totalFoodItems" style="font-size:0.85rem"></span>
+      </div>
+      <div class="card-body">
+        <div id="noFoodToday" class="empty-state" style="display:none; padding:1.5rem;">
+          <div class="empty-icon">🍽️</div>
+          <h3>No food logged today</h3>
+          <p>Log a meal to see your food breakdown!</p>
+          <a href="log.html" class="btn btn-primary btn-sm">Log Now</a>
+        </div>
+        <div class="chart-container" id="foodCatChartWrap">
+          <canvas id="chartFoodCat"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <span class="card-title">🚿 Household Water — Last 7 Days</span>
+      </div>
+      <div class="card-body">
+        <div class="chart-container">
+          <canvas id="chartHousehold"></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Quick Comparison / Fun Facts ────────────────────────── -->
+  <div class="card mb-3">
+    <div class="card-header">
+      <span class="card-title">💡 Water Footprint Comparisons</span>
+      <span class="text-muted" style="font-size:0.8rem">based on today's food log</span>
+    </div>
+    <div class="card-body">
+      <div id="funFactsArea">
+        <div class="fact-grid" id="funFactsGrid">
+          <!-- populated by JS -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Recent Entries ──────────────────────────────────────── -->
+  <div class="card">
+    <div class="card-header">
+      <span class="card-title">📅 Recent Entries</span>
+      <a href="history.html" class="btn btn-ghost btn-sm">View All →</a>
+    </div>
+    <div class="card-body" style="padding:0">
+      <div id="recentEntriesWrap">
+        <div class="empty-state" id="noEntriesMsg">
+          <div class="empty-icon">📝</div>
+          <h3>No entries yet</h3>
+          <p>Start logging food and water to build your history.</p>
+          <a href="log.html" class="btn btn-primary">Start Logging</a>
+        </div>
+        <div class="table-wrapper" id="recentTable" style="display:none">
+          <table>
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>💧 Drinking</th>
+                <th>🍽️ Food FP</th>
+                <th>🚿 Household</th>
+                <th>Total</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="recentTbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<footer>
+  <p>EcoTrack &mdash; Food &amp; Water Footprint Tracker &nbsp;|&nbsp;
+     Data: <a href="https://waterfootprint.org" target="_blank" rel="noopener">Water Footprint Network</a>
+  </p>
+</footer>
+
+<div class="toast" id="toast"></div>
+
+<script src="js/data.js"></script>
+<script>
+// ── Chart.js defaults ──────────────────────────────────────
+Chart.defaults.font.family = "'Inter', system-ui, sans-serif";
+Chart.defaults.color = '#607D8B';
+
+// ── Init ───────────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', () => {
+  initNav();
+  renderDashboard();
+});
+
+function renderDashboard() {
+  const entries = getEntries();
+  const goals   = getGoals();
+  const today   = todayStr();
+  const days    = last7Days();
+
+  // Update goal badge
+  document.getElementById('waterGoalBadge').textContent = `Goal: ${goals.dailyWaterLiters} L`;
+
+  // Stat cards
+  const todayEntry = getEntryByDate(today);
+  if (todayEntry) {
+    const t = calcTotals(todayEntry);
+    document.getElementById('heroNolog').style.display = 'none';
+    document.getElementById('statDrinking').innerHTML =
+      `${todayEntry.drinkingWater.toFixed(1)}<span class="stat-unit">L</span>`;
+    const drinkPct = todayEntry.drinkingWater / goals.dailyWaterLiters;
+    const drinkEl  = document.getElementById('statDrinkingGoal');
+    if (drinkPct >= 1) {
+      drinkEl.className = 'stat-delta good';
+      drinkEl.textContent = '✓ Goal reached!';
+    } else {
+      drinkEl.className = 'stat-delta neutral';
+      drinkEl.textContent = `goal: ${goals.dailyWaterLiters} L`;
+    }
+    document.getElementById('statFoodFP').innerHTML =
+      `${fmtL(t.foodFP)}<span class="stat-unit">L</span>`;
+    const foodDelta = document.getElementById('statFoodDelta');
+    if (t.foodFP > goals.maxFoodFootprintLiters) {
+      foodDelta.className = 'stat-delta bad';
+      foodDelta.textContent = '▲ Over daily goal';
+    } else {
+      foodDelta.className = 'stat-delta good';
+      foodDelta.textContent = '✓ Within goal';
+    }
+    document.getElementById('statHousehold').innerHTML =
+      `${fmtL(t.householdL)}<span class="stat-unit">L</span>`;
+    const houseDelta = document.getElementById('statHouseholdDelta');
+    if (t.householdL > goals.maxHouseholdLiters) {
+      houseDelta.className = 'stat-delta bad';
+      houseDelta.textContent = '▲ Over daily goal';
+    } else {
+      houseDelta.className = 'stat-delta neutral';
+      houseDelta.textContent = 'direct water use';
+    }
+  } else {
+    document.getElementById('heroNolog').style.display = 'flex';
+    ['statDrinking','statFoodFP','statHousehold'].forEach(id => {
+      document.getElementById(id).innerHTML = `—`;
+    });
+  }
+
+  // 7-day average
+  const weekEntries = days.map(d => getEntryByDate(d)).filter(Boolean);
+  if (weekEntries.length > 0) {
+    const avgTotal = weekEntries.reduce((s, e) => {
+      const t = calcTotals(e);
+      return s + t.foodFP + t.householdL;
+    }, 0) / weekEntries.length;
+    document.getElementById('stat7Day').innerHTML =
+      `${fmtL(avgTotal)}<span class="stat-unit">L</span>`;
+  }
+
+  // Recent entries
+  renderRecentTable(entries.slice(0, 7), goals);
+
+  // Charts
+  renderWaterChart(days, entries, goals);
+  renderFootprintChart(days, entries, goals);
+  renderFoodCatChart(todayEntry);
+  renderHouseholdChart(days, entries);
+  renderFunFacts(todayEntry);
+}
+
+// ── Water Intake Chart ─────────────────────────────────────
+function renderWaterChart(days, entries, goals) {
+  const data = days.map(d => {
+    const e = entries.find(x => x.date === d);
+    return e ? e.drinkingWater : null;
+  });
+  const ctx = document.getElementById('chartWater').getContext('2d');
+  new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: days.map(formatDate),
+      datasets: [
+        {
+          label: 'Drinking Water (L)',
+          data,
+          backgroundColor: data.map(v => v === null ? 'rgba(41,182,246,0.2)' :
+            v >= goals.dailyWaterLiters ? 'rgba(46,125,50,0.75)' : 'rgba(41,182,246,0.75)'),
+          borderColor: data.map(v => v === null ? '#B0BEC5' :
+            v >= goals.dailyWaterLiters ? '#2E7D32' : '#0277BD'),
+          borderWidth: 2,
+          borderRadius: 6,
+        },
+        {
+          label: 'Daily Goal',
+          data: days.map(() => goals.dailyWaterLiters),
+          type: 'line',
+          borderColor: '#E65100',
+          borderWidth: 2,
+          borderDash: [6, 4],
+          pointRadius: 0,
+          fill: false,
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { position: 'bottom', labels: { usePointStyle: true, boxWidth: 8 } },
+        tooltip: {
+          callbacks: {
+            label: ctx => ctx.dataset.label + ': ' + (ctx.parsed.y ?? 'No data') + ' L'
+          }
+        }
+      },
+      scales: {
+        y: {
+          beginAtZero: true,
+          grid: { color: 'rgba(0,0,0,0.05)' },
+          ticks: { callback: v => v + ' L' }
+        },
+        x: { grid: { display: false } }
+      }
+    }
+  });
+}
+
+// ── Food Footprint Trend Chart ─────────────────────────────
+function renderFootprintChart(days, entries, goals) {
+  const data = days.map(d => {
+    const e = entries.find(x => x.date === d);
+    return e ? calcTotals(e).foodFP : null;
+  });
+  const ctx = document.getElementById('chartFootprint').getContext('2d');
+
+  const gradient = ctx.createLinearGradient(0, 0, 0, 270);
+  gradient.addColorStop(0, 'rgba(230,81,0,0.25)');
+  gradient.addColorStop(1, 'rgba(230,81,0,0.01)');
+
+  new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: days.map(formatDate),
+      datasets: [
+        {
+          label: 'Food Footprint (L)',
+          data,
+          borderColor: '#E65100',
+          backgroundColor: gradient,
+          borderWidth: 2.5,
+          pointBackgroundColor: '#E65100',
+          pointRadius: 5,
+          pointHoverRadius: 7,
+          fill: true,
+          tension: 0.4,
+          spanGaps: true,
+        },
+        {
+          label: 'Daily Goal',
+          data: days.map(() => goals.maxFoodFootprintLiters),
+          borderColor: '#2E7D32',
+          borderWidth: 2,
+          borderDash: [6, 4],
+          pointRadius: 0,
+          fill: false,
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { position: 'bottom', labels: { usePointStyle: true, boxWidth: 8 } },
+        tooltip: {
+          callbacks: {
+            label: ctx => ctx.dataset.label + ': ' + fmtL(ctx.parsed.y || 0) + ' L'
+          }
+        }
+      },
+      scales: {
+        y: {
+          beginAtZero: true,
+          grid: { color: 'rgba(0,0,0,0.05)' },
+          ticks: { callback: v => fmtL(v) + ' L' }
+        },
+        x: { grid: { display: false } }
+      }
+    }
+  });
+}
+
+// ── Food Category Doughnut ─────────────────────────────────
+function renderFoodCatChart(entry) {
+  const noFood = document.getElementById('noFoodToday');
+  const wrap   = document.getElementById('foodCatChartWrap');
+
+  if (!entry || !entry.foods.length) {
+    noFood.style.display = 'block';
+    wrap.style.display   = 'none';
+    return;
+  }
+  noFood.style.display = 'none';
+  wrap.style.display   = 'block';
+
+  // Aggregate by category
+  const catMap = {};
+  entry.foods.forEach(f => {
+    catMap[f.category] = (catMap[f.category] || 0) + f.wfp * f.qty;
+  });
+  const cats = Object.keys(catMap);
+  const values = cats.map(c => catMap[c]);
+  const colors = cats.map(c => CATEGORY_COLORS[c] || '#90A4AE');
+  const total  = values.reduce((s, v) => s + v, 0);
+
+  document.getElementById('totalFoodItems').textContent =
+    `${entry.foods.reduce((s, f) => s + f.qty, 0)} items • ${fmtL(total)} L total`;
+
+  const ctx = document.getElementById('chartFoodCat').getContext('2d');
+  // Map category ids to labels
+  const catLabels = cats.map(c => {
+    const found = FOOD_DATABASE.find(f => f.category === c);
+    return found ? found.label : c;
+  });
+
+  new Chart(ctx, {
+    type: 'doughnut',
+    data: {
+      labels: catLabels,
+      datasets: [{
+        data: values,
+        backgroundColor: colors,
+        borderWidth: 2,
+        borderColor: '#fff',
+        hoverOffset: 8,
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      cutout: '60%',
+      plugins: {
+        legend: {
+          position: 'right',
+          labels: { usePointStyle: true, pointStyle: 'circle', boxWidth: 8, font: { size: 11 } }
+        },
+        tooltip: {
+          callbacks: {
+            label: ctx => ` ${ctx.label}: ${fmtL(ctx.parsed)} L (${Math.round(ctx.parsed/total*100)}%)`
+          }
+        }
+      }
+    }
+  });
+}
+
+// ── Household Water Bar Chart ──────────────────────────────
+function renderHouseholdChart(days, entries) {
+  const data = days.map(d => {
+    const e = entries.find(x => x.date === d);
+    return e ? calcTotals(e).householdL : null;
+  });
+  const ctx = document.getElementById('chartHousehold').getContext('2d');
+  new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: days.map(formatDate),
+      datasets: [{
+        label: 'Household Water (L)',
+        data,
+        backgroundColor: 'rgba(0,105,92,0.65)',
+        borderColor: '#00695C',
+        borderWidth: 2,
+        borderRadius: 6,
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: { callbacks: { label: ctx => `${fmtL(ctx.parsed.y || 0)} L` } }
+      },
+      scales: {
+        y: {
+          beginAtZero: true,
+          grid: { color: 'rgba(0,0,0,0.05)' },
+          ticks: { callback: v => v + ' L' }
+        },
+        x: { grid: { display: false } }
+      }
+    }
+  });
+}
+
+// ── Fun Facts / Comparisons ────────────────────────────────
+function renderFunFacts(entry) {
+  const grid = document.getElementById('funFactsGrid');
+  const totalFoodFP = entry ? calcTotals(entry).foodFP : 0;
+
+  const bathtub  = 150;   // liters
+  const pool     = 2500000;
+  const shower   = 60;
+
+  const facts = [
+    {
+      icon: '🛁',
+      title: 'Bathtub Equivalents',
+      desc: entry && totalFoodFP > 0
+        ? `Today's food required enough water to fill <strong>${(totalFoodFP / bathtub).toFixed(1)} bathtubs</strong> (${fmtL(totalFoodFP)} L total).`
+        : 'Log food today to see how many bathtubs your diet fills!'
+    },
+    {
+      icon: '🚿',
+      title: 'Shower Comparison',
+      desc: entry && totalFoodFP > 0
+        ? `Your food footprint equals <strong>${Math.round(totalFoodFP / shower)} showers</strong>. The hidden water in food often far exceeds what we use at home.`
+        : 'A typical shower uses ~60 L. Your food footprint is often much larger!'
+    },
+    {
+      icon: '🐄',
+      title: 'Beef vs. Vegetables',
+      desc: 'A single 150g beef serving requires <strong>2,310 L</strong> of water to produce — 66× more than an equal-weight serving of broccoli (35 L).'
+    },
+    {
+      icon: '☕',
+      title: 'Your Morning Coffee',
+      desc: 'One cup of coffee requires <strong>140 L</strong> of water — mostly to grow the coffee beans. That\'s more than a full load of laundry!'
+    },
+  ];
+
+  grid.innerHTML = facts.map(f => `
+    <div class="fact-card">
+      <div class="fact-icon">${f.icon}</div>
+      <div class="fact-title">${f.title}</div>
+      <div class="fact-desc">${f.desc}</div>
+    </div>
+  `).join('');
+}
+
+// ── Recent Entries Table ───────────────────────────────────
+function renderRecentTable(entries, goals) {
+  const noMsg = document.getElementById('noEntriesMsg');
+  const table = document.getElementById('recentTable');
+  const tbody = document.getElementById('recentTbody');
+
+  if (!entries.length) {
+    noMsg.style.display  = 'block';
+    table.style.display  = 'none';
+    return;
+  }
+  noMsg.style.display = 'none';
+  table.style.display = 'block';
+
+  tbody.innerHTML = entries.map(e => {
+    const t = calcTotals(e);
+    const fpClass = t.foodFP > goals.maxFoodFootprintLiters ? 'badge-red' : 'badge-green';
+    return `
+      <tr>
+        <td><strong>${formatDateLong(e.date)}</strong></td>
+        <td>${e.drinkingWater.toFixed(1)} L</td>
+        <td><span class="badge ${fpClass}">${fmtL(t.foodFP)} L</span></td>
+        <td>${fmtL(t.householdL)} L</td>
+        <td><strong>${fmtL(t.totalL)} L</strong></td>
+        <td>
+          <a href="log.html?date=${e.date}" class="btn btn-ghost btn-sm">Edit</a>
+        </td>
+      </tr>
+    `;
+  }).join('');
+}
+</script>
+</body>
+</html>

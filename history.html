@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EcoTrack — History</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+</head>
+<body>
+
+<!-- ── Navigation ───────────────────────────────────────────── -->
+<nav class="navbar">
+  <div class="nav-container">
+    <a href="index.html" class="nav-brand">
+      <span class="brand-icon">💧</span><span>EcoTrack</span>
+    </a>
+    <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">
+      <span></span><span></span><span></span>
+    </button>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="index.html"   class="nav-link">📊 Dashboard</a></li>
+      <li><a href="log.html"     class="nav-link">📝 Log Entry</a></li>
+      <li><a href="history.html" class="nav-link">📅 History</a></li>
+      <li><a href="goals.html"   class="nav-link">🎯 Goals</a></li>
+      <li><a href="about.html"   class="nav-link">ℹ️ About</a></li>
+    </ul>
+  </div>
+</nav>
+
+<main class="page">
+  <div class="page-header">
+    <h1 class="page-title">📅 History</h1>
+    <p class="page-subtitle">All your logged entries with filterable stats and trends</p>
+  </div>
+
+  <!-- ── Summary Cards (filtered range) ──────────────────────── -->
+  <div class="stats-grid" id="summaryCards">
+    <div class="stat-card blue">
+      <div class="stat-label">Entries Logged</div>
+      <div class="stat-value" id="sumEntries">0</div>
+      <div class="stat-delta neutral" id="sumDateRange">all time</div>
+      <div class="stat-icon">📋</div>
+    </div>
+    <div class="stat-card orange">
+      <div class="stat-label">Avg Food Footprint</div>
+      <div class="stat-value" id="sumAvgFood">—<span class="stat-unit">L</span></div>
+      <div class="stat-delta neutral">per day</div>
+      <div class="stat-icon">🍽️</div>
+    </div>
+    <div class="stat-card teal">
+      <div class="stat-label">Avg Drinking Water</div>
+      <div class="stat-value" id="sumAvgDrink">—<span class="stat-unit">L</span></div>
+      <div class="stat-delta neutral">per day</div>
+      <div class="stat-icon">💧</div>
+    </div>
+    <div class="stat-card green">
+      <div class="stat-label">Total Water Logged</div>
+      <div class="stat-value" id="sumTotal">—<span class="stat-unit">L</span></div>
+      <div class="stat-delta neutral">food + household</div>
+      <div class="stat-icon">🌊</div>
+    </div>
+  </div>
+
+  <!-- ── Trend Chart ──────────────────────────────────────────── -->
+  <div class="card mb-3" id="trendChartCard" style="display:none">
+    <div class="card-header">
+      <span class="card-title">📈 Footprint Trend</span>
+      <div style="display:flex;gap:0.5rem;align-items:center">
+        <span class="badge badge-red" style="font-size:0.72rem">■ Food FP</span>
+        <span class="badge badge-teal" style="font-size:0.72rem">■ Household</span>
+        <span class="badge badge-blue" style="font-size:0.72rem">■ Drinking</span>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="chart-container" style="height:250px">
+        <canvas id="trendChart"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Filters ──────────────────────────────────────────────── -->
+  <div class="card mb-3">
+    <div class="card-body" style="padding:1rem 1.4rem">
+      <div class="filter-bar">
+        <input type="date" id="filterFrom" class="form-control" title="From date" />
+        <span class="text-muted">to</span>
+        <input type="date" id="filterTo"   class="form-control" title="To date" />
+        <input type="text" id="filterSearch" class="form-control" placeholder="🔍 Search notes…" />
+        <button class="btn btn-outline btn-sm" id="filterResetBtn">Reset</button>
+        <button class="btn btn-primary btn-sm" id="exportBtn">⬇️ Export CSV</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Entries Table ────────────────────────────────────────── -->
+  <div class="card">
+    <div class="card-header">
+      <span class="card-title">📋 All Entries</span>
+      <span class="text-muted" id="entryCount" style="font-size:0.85rem"></span>
+    </div>
+    <div class="card-body" style="padding:0">
+      <div id="noHistoryMsg" class="empty-state">
+        <div class="empty-icon">📝</div>
+        <h3>No entries yet</h3>
+        <p>Start logging food and water daily to build your history.</p>
+        <a href="log.html" class="btn btn-primary">Log Today</a>
+      </div>
+      <div class="table-wrapper" id="historyTableWrap" style="display:none">
+        <table id="historyTable">
+          <thead>
+            <tr>
+              <th data-col="date">Date ↕</th>
+              <th data-col="drink">💧 Drinking</th>
+              <th data-col="food">🍽️ Food FP</th>
+              <th data-col="house">🚿 Household</th>
+              <th data-col="total">Total ↕</th>
+              <th>Notes</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="historyTbody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<footer>
+  <p>EcoTrack &mdash; Food &amp; Water Footprint Tracker &nbsp;|&nbsp;
+     Data: <a href="https://waterfootprint.org" target="_blank" rel="noopener">Water Footprint Network</a>
+  </p>
+</footer>
+
+<div class="toast" id="toast"></div>
+
+<!-- Delete Modal -->
+<div class="modal-overlay" id="deleteModal">
+  <div class="modal">
+    <div class="modal-title">🗑️ Delete Entry?</div>
+    <div class="modal-text" id="deleteModalText">This will permanently delete this entry.</div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" id="deleteCancelBtn">Cancel</button>
+      <button class="btn btn-danger" id="deleteConfirmBtn">Delete</button>
+    </div>
+  </div>
+</div>
+
+<script src="js/data.js"></script>
+<script>
+Chart.defaults.font.family = "'Inter', system-ui, sans-serif";
+Chart.defaults.color = '#607D8B';
+
+let allEntries  = [];
+let filtered    = [];
+let sortCol     = 'date';
+let sortAsc     = false;
+let pendingDelete = null;
+let trendChart  = null;
+
+document.addEventListener('DOMContentLoaded', () => {
+  initNav();
+  allEntries = getEntries();
+  filtered   = [...allEntries];
+
+  // Set default date range to last 30 days
+  const to   = todayStr();
+  const from = new Date(); from.setDate(from.getDate() - 29);
+  const fromStr = from.toISOString().split('T')[0];
+  document.getElementById('filterFrom').value = fromStr;
+  document.getElementById('filterTo').value   = to;
+
+  applyFilters();
+
+  // Filter events
+  ['filterFrom','filterTo','filterSearch'].forEach(id => {
+    document.getElementById(id).addEventListener('input', applyFilters);
+  });
+  document.getElementById('filterResetBtn').addEventListener('click', () => {
+    document.getElementById('filterFrom').value   = '';
+    document.getElementById('filterTo').value     = '';
+    document.getElementById('filterSearch').value = '';
+    applyFilters();
+  });
+  document.getElementById('exportBtn').addEventListener('click', exportCSV);
+
+  // Sort
+  document.querySelectorAll('#historyTable th[data-col]').forEach(th => {
+    th.addEventListener('click', () => {
+      if (sortCol === th.dataset.col) sortAsc = !sortAsc;
+      else { sortCol = th.dataset.col; sortAsc = false; }
+      renderTable();
+    });
+  });
+
+  // Delete modal
+  document.getElementById('deleteCancelBtn').addEventListener('click', () => {
+    document.getElementById('deleteModal').classList.remove('active');
+    pendingDelete = null;
+  });
+  document.getElementById('deleteConfirmBtn').addEventListener('click', () => {
+    if (pendingDelete) {
+      deleteEntry(pendingDelete);
+      allEntries = getEntries();
+      applyFilters();
+      showToast('Entry deleted', 'success');
+      pendingDelete = null;
+    }
+    document.getElementById('deleteModal').classList.remove('active');
+  });
+});
+
+function applyFilters() {
+  const from   = document.getElementById('filterFrom').value;
+  const to     = document.getElementById('filterTo').value;
+  const search = document.getElementById('filterSearch').value.toLowerCase();
+
+  filtered = allEntries.filter(e => {
+    if (from && e.date < from) return false;
+    if (to   && e.date > to)   return false;
+    if (search && !e.notes.toLowerCase().includes(search) &&
+        !e.date.includes(search)) return false;
+    return true;
+  });
+
+  renderSummary();
+  renderTable();
+  renderTrendChart();
+}
+
+function renderSummary() {
+  const n = filtered.length;
+  document.getElementById('sumEntries').textContent = n;
+
+  const rangeEl = document.getElementById('sumDateRange');
+  if (n === 0) {
+    rangeEl.textContent = 'no entries in range';
+    ['sumAvgFood','sumAvgDrink','sumTotal'].forEach(id =>
+      document.getElementById(id).innerHTML = '—<span class="stat-unit">L</span>');
+    return;
+  }
+
+  const from = document.getElementById('filterFrom').value;
+  const to   = document.getElementById('filterTo').value;
+  rangeEl.textContent = from && to
+    ? `${formatDate(from)} – ${formatDate(to)}`
+    : 'all entries';
+
+  let totalFood = 0, totalDrink = 0, totalAll = 0;
+  filtered.forEach(e => {
+    const t = calcTotals(e);
+    totalFood  += t.foodFP;
+    totalDrink += t.drinkingL;
+    totalAll   += t.totalL;
+  });
+
+  document.getElementById('sumAvgFood').innerHTML  = `${fmtL(totalFood/n)}<span class="stat-unit">L</span>`;
+  document.getElementById('sumAvgDrink').innerHTML = `${(totalDrink/n).toFixed(1)}<span class="stat-unit">L</span>`;
+  document.getElementById('sumTotal').innerHTML    = `${fmtL(totalAll)}<span class="stat-unit">L</span>`;
+}
+
+function renderTable() {
+  const wrap  = document.getElementById('historyTableWrap');
+  const noMsg = document.getElementById('noHistoryMsg');
+
+  if (!filtered.length) {
+    wrap.style.display  = 'none';
+    noMsg.style.display = 'block';
+    document.getElementById('entryCount').textContent = '';
+    return;
+  }
+  noMsg.style.display = 'none';
+  wrap.style.display  = 'block';
+
+  // Sort
+  const sorted = [...filtered].sort((a, b) => {
+    let av, bv;
+    switch (sortCol) {
+      case 'date':  av = a.date; bv = b.date; break;
+      case 'drink': av = a.drinkingWater; bv = b.drinkingWater; break;
+      case 'food':  av = calcTotals(a).foodFP; bv = calcTotals(b).foodFP; break;
+      case 'house': av = calcTotals(a).householdL; bv = calcTotals(b).householdL; break;
+      case 'total': av = calcTotals(a).totalL; bv = calcTotals(b).totalL; break;
+      default:      av = a.date; bv = b.date;
+    }
+    return sortAsc ? (av > bv ? 1 : -1) : (av < bv ? 1 : -1);
+  });
+
+  document.getElementById('entryCount').textContent =
+    `Showing ${sorted.length} entr${sorted.length === 1 ? 'y' : 'ies'}`;
+
+  const goals = getGoals();
+  document.getElementById('historyTbody').innerHTML = sorted.map(e => {
+    const t = calcTotals(e);
+    const foodClass  = t.foodFP  > goals.maxFoodFootprintLiters  ? 'badge-red' : 'badge-green';
+    const houseClass = t.householdL > goals.maxHouseholdLiters   ? 'badge-orange' : 'badge-teal';
+    const notePreview = e.notes
+      ? `<span title="${e.notes.replace(/"/g,'&quot;')}">${e.notes.slice(0,40)}${e.notes.length > 40 ? '…' : ''}</span>`
+      : '<span class="text-muted">—</span>';
+    return `
+      <tr>
+        <td><strong>${formatDateLong(e.date)}</strong></td>
+        <td>${e.drinkingWater.toFixed(1)} L</td>
+        <td><span class="badge ${foodClass}">${fmtL(t.foodFP)} L</span></td>
+        <td><span class="badge ${houseClass}">${fmtL(t.householdL)} L</span></td>
+        <td><strong>${fmtL(t.totalL)} L</strong></td>
+        <td style="max-width:180px;font-size:0.82rem">${notePreview}</td>
+        <td>
+          <a href="log.html?date=${e.date}" class="btn btn-ghost btn-sm">✏️ Edit</a>
+          <button class="btn btn-ghost btn-sm" style="color:var(--danger)"
+                  onclick="confirmDelete('${e.id}','${formatDate(e.date)}')">🗑️</button>
+        </td>
+      </tr>
+    `;
+  }).join('');
+}
+
+function confirmDelete(id, label) {
+  pendingDelete = id;
+  document.getElementById('deleteModalText').textContent =
+    `This will permanently delete the entry for ${label}. This cannot be undone.`;
+  document.getElementById('deleteModal').classList.add('active');
+}
+
+// ── Trend Chart ────────────────────────────────────────────
+function renderTrendChart() {
+  const card = document.getElementById('trendChartCard');
+  if (filtered.length < 2) { card.style.display = 'none'; return; }
+
+  // Show at most 60 most recent entries
+  const data = [...filtered]
+    .sort((a, b) => a.date.localeCompare(b.date))
+    .slice(-60);
+
+  card.style.display = 'block';
+  const labels = data.map(e => formatDate(e.date));
+  const foodFPs    = data.map(e => calcTotals(e).foodFP);
+  const houseFPs   = data.map(e => calcTotals(e).householdL);
+  const drinkFPs   = data.map(e => e.drinkingWater);
+
+  const ctx = document.getElementById('trendChart').getContext('2d');
+  if (trendChart) trendChart.destroy();
+  trendChart = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels,
+      datasets: [
+        {
+          label: 'Food Footprint (L)',
+          data: foodFPs,
+          borderColor: '#E53935',
+          backgroundColor: 'rgba(229,57,53,0.08)',
+          borderWidth: 2.5,
+          pointRadius: 4,
+          tension: 0.3,
+          fill: true,
+        },
+        {
+          label: 'Household Water (L)',
+          data: houseFPs,
+          borderColor: '#00695C',
+          backgroundColor: 'rgba(0,105,92,0.08)',
+          borderWidth: 2.5,
+          pointRadius: 4,
+          tension: 0.3,
+          fill: true,
+        },
+        {
+          label: 'Drinking Water (L)',
+          data: drinkFPs,
+          borderColor: '#0277BD',
+          backgroundColor: 'rgba(2,119,189,0.08)',
+          borderWidth: 2,
+          pointRadius: 4,
+          tension: 0.3,
+          fill: true,
+        },
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      interaction: { mode: 'index', intersect: false },
+      plugins: {
+        legend: { position: 'bottom', labels: { usePointStyle: true, boxWidth: 8 } },
+        tooltip: {
+          callbacks: {
+            label: ctx => `${ctx.dataset.label}: ${fmtL(ctx.parsed.y)} L`
+          }
+        }
+      },
+      scales: {
+        y: {
+          beginAtZero: true,
+          grid: { color: 'rgba(0,0,0,0.05)' },
+          ticks: { callback: v => fmtL(v) + ' L' }
+        },
+        x: { grid: { display: false } }
+      }
+    }
+  });
+}
+
+// ── CSV Export ────────────────────────────────────────────
+function exportCSV() {
+  if (!filtered.length) { showToast('No entries to export', 'error'); return; }
+  const goals = getGoals();
+  const header = ['Date','Drinking Water (L)','Food Footprint (L)','Household Water (L)','Total (L)','Notes'];
+  const rows = filtered.map(e => {
+    const t = calcTotals(e);
+    return [
+      e.date,
+      e.drinkingWater.toFixed(2),
+      t.foodFP.toFixed(0),
+      t.householdL.toFixed(0),
+      t.totalL.toFixed(0),
+      `"${(e.notes || '').replace(/"/g, '""')}"`
+    ].join(',');
+  });
+  const csv  = [header.join(','), ...rows].join('\n');
+  const blob = new Blob([csv], { type: 'text/csv' });
+  const url  = URL.createObjectURL(blob);
+  const a    = document.createElement('a');
+  a.href     = url;
+  a.download = `ecotrack-history-${todayStr()}.csv`;
+  a.click();
+  URL.revokeObjectURL(url);
+  showToast('CSV exported!');
+}
+</script>
+</body>
+</html>
