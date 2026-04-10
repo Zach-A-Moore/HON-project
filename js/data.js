@@ -73,6 +73,7 @@ const FOOD_DATABASE = [
   { id: 'celery',    name: 'Celery (2 stalks)',           category: 'vegetables',label: 'Vegetables',   wfp:   17, icon: '🥗' },
   { id: 'cauliflower',name:'Cauliflower (1 cup)',         category: 'vegetables',label: 'Vegetables',   wfp:   41, icon: '🥦' },
   { id: 'zucchini',  name: 'Zucchini (1 cup)',            category: 'vegetables',label: 'Vegetables',   wfp:   30, icon: '🥒' },
+  { id: 'generic-vegetable', name: 'Generic Vegetable (1 serving)', category: 'vegetables', label: 'Vegetables', wfp: 125, icon: '🥗' },
   // Fruits
   { id: 'apple',     name: 'Apple (1 medium)',            category: 'fruits',    label: 'Fruits',       wfp:  125, icon: '🍎' },
   { id: 'banana',    name: 'Banana (1 medium)',           category: 'fruits',    label: 'Fruits',       wfp:  160, icon: '🍌' },
@@ -82,6 +83,7 @@ const FOOD_DATABASE = [
   { id: 'avocado',   name: 'Avocado (½ medium)',          category: 'fruits',    label: 'Fruits',       wfp:  151, icon: '🥑' },
   { id: 'mango',     name: 'Mango (1 medium)',            category: 'fruits',    label: 'Fruits',       wfp:  220, icon: '🥭' },
   { id: 'blueberries',name:'Blueberries (1 cup)',         category: 'fruits',    label: 'Fruits',       wfp:   45, icon: '🫐' },
+  { id: 'generic-fruit', name: 'Generic Fruit (1 serving)', category: 'fruits', label: 'Fruits', wfp: 125, icon: '🍎' },
   { id: 'xls-fruit-serving', name: 'Fruit Serving (apple/orange/grapes/cherries)', category: 'fruits', label: 'Fruits', wfp: 105, icon: '🍎' },
   // Snacks & Sweets
   { id: 'candy-bar', name: 'Candy Bar (1 bar)',           category: 'snacks',    label: 'Snacks & Sweets', wfp:  130, icon: '🍬' },
