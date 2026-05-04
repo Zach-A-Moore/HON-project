@@ -814,6 +814,19 @@ td:last-child { white-space: nowrap; }
   margin: 1.5rem 0;
 }
 
+/* ── Tooltips ───────────────────────────────────────────────── */
+span[title] {
+  border-bottom: 1px dotted var(--secondary);
+  cursor: help;
+  transition: all var(--transition);
+  font-weight: 500;
+  color: var(--secondary);
+}
+span[title]:hover {
+  background: linear-gradient(120deg, rgba(2, 119, 189, 0.05), rgba(41, 182, 246, 0.05));
+  border-bottom: 1px dotted var(--secondary);
+}
+
 /* ── Footer ─────────────────────────────────────────────────── */
 footer {
   text-align: center;
